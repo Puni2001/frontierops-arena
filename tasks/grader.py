@@ -14,7 +14,7 @@ class TaskGrader:
         Returns score 0.0 - 1.0
         """
         if not tickets:
-            return 0.0
+            return 0.01
             
         correct = 0
         for i, action in enumerate(agent_actions):
@@ -25,7 +25,7 @@ class TaskGrader:
             if action.get("categorization") == expected_category:
                 correct += 1
         
-        return correct / len(tickets)
+        return TaskGrader._clamp_score(correct / len(tickets))
     
     @staticmethod
     def grade_medium(agent_actions: List[Dict], tickets: List[Ticket]) -> float:
@@ -35,7 +35,7 @@ class TaskGrader:
         Returns score 0.0 - 1.0
         """
         if not tickets:
-            return 0.0
+            return 0.01
             
         category_score = 0
         priority_score = 0
@@ -57,7 +57,7 @@ class TaskGrader:
         priority_accuracy = priority_score / len(tickets)
         
         # Weighted average
-        return (category_accuracy * 0.5) + (priority_accuracy * 0.5)
+        return TaskGrader._clamp_score((category_accuracy * 0.5) + (priority_accuracy * 0.5))
     
     @staticmethod
     def grade_hard(agent_actions: List[Dict], tickets: List[Ticket], 
@@ -68,7 +68,7 @@ class TaskGrader:
         Returns score 0.0 - 1.0
         """
         if not tickets:
-            return 0.0
+            return 0.01
             
         resolution_score = 0
         escalation_score = 0
@@ -101,7 +101,12 @@ class TaskGrader:
         sentiment_recovery = sentiment_recovery_score / len(tickets)
         
         # Weighted combination
-        return (resolution_accuracy * 0.5) + (escalation_accuracy * 0.3) + (sentiment_recovery * 0.2)
+        return TaskGrader._clamp_score((resolution_accuracy * 0.5) + (escalation_accuracy * 0.3) + (sentiment_recovery * 0.2))
+    
+    @staticmethod
+    def _clamp_score(score: float) -> float:
+        """Ensure score is strictly within (0, 1) range as per Phase 2 requirements"""
+        return max(0.01, min(0.99, float(score)))
     
     @staticmethod
     def _get_expected_priority(ticket: Ticket) -> Priority:
