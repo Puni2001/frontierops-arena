@@ -13,25 +13,21 @@ import json
 import time
 import textwrap
 from dotenv import load_dotenv
+from typing import List, Optional
+from openai import OpenAI
 
 # Load environment variables
 load_dotenv(override=True)
 
-from typing import List, Optional, Dict
-from openai import OpenAI
-import google.generativeai as genai
-
 from src.customer_support_env import CustomerSupportEnv, Action
 from tasks.grader import TaskGrader
 
-# Configuration
-MODEL_NAME = os.getenv("MODEL_NAME", "models/gemini-flash-latest")
+# --- MANDATORY CONFIGURATION (AS PER HACKATHON CHECKLIST) ---
+# Defaults are set ONLY for API_BASE_URL and MODEL_NAME
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
-
-if "gemini" in MODEL_NAME.lower():
-    API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("OPENAI_API_KEY")
-else:
-    API_KEY = os.getenv("OPENAI_API_KEY") or os.getenv("HF_TOKEN")
+MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
+# No default for HF_TOKEN
+HF_TOKEN = os.getenv("HF_TOKEN")
 
 BENCHMARK = "customer-support-env"
 MAX_STEPS = 15
@@ -54,18 +50,8 @@ def log_end(success: bool, steps: int, score: float, rewards: List[float]) -> No
 class SupportAgent:
     def __init__(self, model_name: str, api_key: str, base_url: str):
         self.model_name = model_name
-        self.api_key = api_key
-        self.base_url = base_url
-        self.use_native = "gemini" in model_name.lower() and "generativelanguage" not in base_url.lower() or os.getenv("GEMINI_API_KEY")
-        
-        if self.use_native:
-            genai.configure(api_key=self.api_key)
-            self.model = genai.GenerativeModel(
-                model_name=model_name.replace("models/", ""),
-                generation_config={"temperature": TEMPERATURE}
-            )
-        else:
-            self.client = OpenAI(base_url=self.base_url, api_key=self.api_key)
+        # MANDATORY: Using the OpenAI client for all LLM calls
+        self.client = OpenAI(base_url=base_url, api_key=api_key)
 
     def get_action(self, observation, task_level: str) -> Action:
         ticket = observation.current_ticket
@@ -83,17 +69,13 @@ class SupportAgent:
 
         for attempt in range(3):
             try:
-                if self.use_native:
-                    resp = self.model.generate_content(f"{system}\n\n{user}")
-                    content = resp.text
-                else:
-                    resp = self.client.chat.completions.create(
-                        model=self.model_name,
-                        messages=[{"role": "system", "content": system}, {"role": "user", "content": user}],
-                        temperature=TEMPERATURE,
-                        max_tokens=200
-                    )
-                    content = resp.choices[0].message.content
+                resp = self.client.chat.completions.create(
+                    model=self.model_name,
+                    messages=[{"role": "system", "content": system}, {"role": "user", "content": user}],
+                    temperature=TEMPERATURE,
+                    max_tokens=200
+                )
+                content = resp.choices[0].message.content
                 
                 # Extract JSON
                 if "```json" in content: content = content.split("```json")[1].split("```")[0]
@@ -106,8 +88,9 @@ class SupportAgent:
                     reasoning=data.get("reasoning", "")
                 )
             except Exception as e:
-                if "429" in str(e) or "ResourceExhausted" in str(e):
-                    time.sleep((attempt + 1) * 10) # Simple wait
+                # Basic rate limit handling
+                if "429" in str(e):
+                    time.sleep((attempt + 1) * 10)
                     continue
                 if attempt == 2: return Action(action_type="request_info", value=str(e)[:50])
                 time.sleep(1)
@@ -117,7 +100,7 @@ class SupportAgent:
 def run_task(task_level: str):
     log_start(task_level, BENCHMARK, MODEL_NAME)
     env = CustomerSupportEnv(task_level=task_level)
-    agent = SupportAgent(MODEL_NAME, API_KEY, API_BASE_URL)
+    agent = SupportAgent(MODEL_NAME, HF_TOKEN, API_BASE_URL)
     
     obs = env.reset()
     rewards, actions, step = [], [], 0
@@ -147,7 +130,9 @@ def run_task(task_level: str):
     log_end(env.done, step, score, rewards)
 
 def main():
-    if not API_KEY: return
+    if not HF_TOKEN:
+        print("Error: HF_TOKEN environment variable not set.")
+        return
     for task in ["easy", "medium", "hard"]:
         run_task(task)
 
