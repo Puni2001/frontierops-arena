@@ -404,14 +404,16 @@ class CustomerSupportEnv:
         )
 
         if action.action_type == "categorize":
-            if action.value == ticket.category.value:
+            val = str(action.value).strip().lower()
+            valid_cats = {c.value: c.value for c in TicketCategory}
+            
+            if val == ticket.category.value:
                 base = 0.4
-                # Bonus for reasoning quality
                 if action.reasoning and len(action.reasoning) > 20:
                     base += 0.05
                 breakdown["correct_category"] = base
                 total += base
-            elif action.value in [c.value for c in TicketCategory]:
+            elif val in valid_cats:
                 breakdown["partial_category"] = 0.1
                 total += 0.1
             else:

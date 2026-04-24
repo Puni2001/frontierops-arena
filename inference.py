@@ -113,24 +113,35 @@ Respond ONLY with valid JSON:
 
         system = self.SYSTEM_PROMPTS.get(task_level, self.SYSTEM_PROMPTS["hard"])
 
-        # Build rich user context
+        # Build rich user context — avoiding leakage of target labels
         kb_hint = ""
         if task_level in ("hard", "chaos", "multi_agent_resolver"):
             kb = KNOWLEDGE_BASE.get(ticket.category.value, {})
             steps = ", ".join(kb.get("steps", []))
             escalate_if = ", ".join(kb.get("escalate_if", []))
             kb_hint = f"\nKnowledge Base Steps: {steps}\nEscalate if: {escalate_if or 'N/A'}"
-
-        user = f"""Ticket ID: {ticket.id}
-Description: {ticket.description}
-Category: {ticket.category.value}
-Sentiment: {ticket.sentiment:.2f} (-1=very negative, +1=very positive)
-Priority: {ticket.priority.value}
-SLA Status: {observation.current_sla_status}
-VIP Customer: {ticket.is_vip}
-Previous Contacts: {ticket.previous_contacts}
-Urgent tickets in queue: {observation.urgent_tickets_in_queue}
-Agent Role: {observation.agent_role}{kb_hint}"""
+            
+        meta = []
+        meta.append(f"Ticket ID: {ticket.id}")
+        meta.append(f"Description: {ticket.description}")
+        
+        # Only provide category if it's NOT the primary task (categorize)
+        if task_level not in ("easy", "multi_agent_triage"):
+            meta.append(f"Category: {ticket.category.value}")
+        
+        meta.append(f"Sentiment: {ticket.sentiment:.2f} (-1=very negative, +1=very positive)")
+        
+        # Only provide priority if it's NOT the primary task (prioritize)
+        if task_level != "medium":
+            meta.append(f"Priority: {ticket.priority.value}")
+            
+        meta.append(f"SLA Status: {observation.current_sla_status}")
+        meta.append(f"VIP Customer: {ticket.is_vip}")
+        meta.append(f"Previous Contacts: {ticket.previous_contacts}")
+        meta.append(f"Urgent tickets in queue: {observation.urgent_tickets_in_queue}")
+        meta.append(f"Agent Role: {observation.agent_role}")
+        
+        user = "\n".join(meta) + kb_hint
 
         if observation.triage_decision:
             user += f"\nTriage Decision: {observation.triage_decision}"
@@ -181,10 +192,10 @@ Agent Role: {observation.agent_role}{kb_hint}"""
 
 # ── Task Runner ──────────────────────────────────────────────
 
-def run_task(task_level: str, agent: SupportAgent) -> Dict:
+def run_task(task_level: str, agent: SupportAgent, seed: Optional[int] = None) -> Dict:
     log_start(task_level, BENCHMARK, MODEL_NAME)
 
-    env = CustomerSupportEnv(task_level=task_level)
+    env = CustomerSupportEnv(task_level=task_level, seed=seed)
     obs = env.reset()
     rewards: List[float] = []
     actions: List[Dict] = []
@@ -253,7 +264,7 @@ def main():
         tasks.append("chaos")
 
     for task in tasks:
-        result = run_task(task, agent)
+        result = run_task(task, agent, seed=42)
         results.append(result)
         time.sleep(2)  # brief pause between tasks
 

@@ -278,6 +278,8 @@ async def demo_episode(task_level: str = "hard", use_llm: bool = False, agent_ty
         hf_token = os.getenv("HF_TOKEN")
         if not hf_token:
             raise HTTPException(500, "HF_TOKEN not found in .env. Cannot use live LLM.")
+        
+        print(f"[DEMO] Running with agent_type={agent_type}, model={model_name}")
         agent_live = SupportAgent(model_name=model_name, api_key=hf_token, base_url=api_base)
 
     while not env.done:

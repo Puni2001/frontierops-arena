@@ -90,9 +90,9 @@ def generate_dataset(task_level: str, n_samples: int = 500) -> List[Dict]:
     samples = []
 
     SYSTEM_PROMPTS = {
-        "easy": "You are a customer support triage agent. Classify the ticket. Respond in JSON: {\"action_type\": \"categorize\", \"value\": \"<category>\", \"reasoning\": \"<why>\"}",
-        "medium": "You are a support ops agent. Set the correct priority. Respond in JSON: {\"action_type\": \"prioritize\", \"value\": \"<priority>\", \"reasoning\": \"<why>\"}",
-        "hard": "You are a support resolution specialist. Resolve or escalate the ticket. Respond in JSON: {\"action_type\": \"resolve|escalate\", \"value\": \"<resolution>\", \"reasoning\": \"<why>\"}",
+        "easy": "You are a customer support triage agent. Classify the ticket into exactly one category: technical, billing, account, feature_request, or complaint. Respond in JSON: {\"action_type\": \"categorize\", \"value\": \"<category>\", \"reasoning\": \"<why>\"}",
+        "medium": "You are a support ops agent. Set the correct priority: low, medium, high, or urgent. Respond in JSON: {\"action_type\": \"prioritize\", \"value\": \"<priority>\", \"reasoning\": \"<why>\"}",
+        "hard": "You are a support resolution specialist. Resolve the ticket using KB steps or escalate (if sentiment < -0.7 or category is complaint). Respond in JSON: {\"action_type\": \"resolve|escalate\", \"value\": \"<resolution>\", \"reasoning\": \"<why>\"}",
         "chaos": "You are handling a ticket storm. Resolve or escalate efficiently. Respond in JSON: {\"action_type\": \"resolve|escalate\", \"value\": \"<resolution>\", \"reasoning\": \"<why>\"}",
     }
 
@@ -104,16 +104,21 @@ def generate_dataset(task_level: str, n_samples: int = 500) -> List[Dict]:
         if not ticket:
             continue
 
-        kb = KNOWLEDGE_BASE.get(ticket.category.value, {})
-        steps = ", ".join(kb.get("steps", []))
-
         # Do not leak ground-truth labels like Category/Priority in the prompt.
-        user = f"""Ticket: {ticket.description}
-Sentiment: {ticket.sentiment:.2f}
-SLA Status: {obs.current_sla_status}
-VIP: {ticket.is_vip}
-Previous Contacts: {ticket.previous_contacts}
-KB Steps: {steps}"""
+        # Also avoid implicit leakage via KB steps for triage tasks.
+        meta = []
+        meta.append(f"Ticket: {ticket.description}")
+        meta.append(f"Sentiment: {ticket.sentiment:.2f}")
+        meta.append(f"SLA Status: {obs.current_sla_status}")
+        meta.append(f"VIP: {ticket.is_vip}")
+        meta.append(f"Previous Contacts: {ticket.previous_contacts}")
+        
+        if task_level in ("hard", "chaos"):
+            kb = KNOWLEDGE_BASE.get(ticket.category.value, {})
+            steps = ", ".join(kb.get("steps", []))
+            meta.append(f"KB Steps: {steps}")
+            
+        user = "\n".join(meta)
 
         samples.append({
             "prompt": [
