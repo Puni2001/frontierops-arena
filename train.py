@@ -206,6 +206,6 @@ if __name__ == "__main__":
     parser.add_argument("--samples", type=int, default=500,
                         help="Training samples per task level")
     parser.add_argument("--push-to-hub", action="store_true")
-    parser.add_argument("--hub-repo", default="punith2001/ai-support-envoy-model")
+    parser.add_argument("--hub-repo", default="punith2001/openenv-customer-support-model")
     args = parser.parse_args()
     train(args)
