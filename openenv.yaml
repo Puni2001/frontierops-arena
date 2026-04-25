@@ -1,4 +1,4 @@
-name: ai-support-envoy
+name: frontierops-arena
 version: 2.0.0
 description: >
   Enterprise customer support RL environment with multi-agent mode, chaos testing,
