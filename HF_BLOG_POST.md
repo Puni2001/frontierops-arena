@@ -23,7 +23,7 @@ We trained a policy with a curriculum using GRPO/TRL:
 3. `hard` — resolution quality + escalation logic
 4. evaluated on `frontier` stress mode for safe autonomy behavior
 
-Training assets are in `train.py` and `train_colab.ipynb`.
+Training assets are in `train.py` and `frontierops_training_lab.ipynb`.
 
 ## Theme alignment
 
@@ -71,7 +71,7 @@ Reward-hacking ablation (`results/ablation_hack_penalty.json`):
 - OpenEnv manifest: [`openenv.yaml`](openenv.yaml)
 - Environment core: [`src/customer_support_env.py`](src/customer_support_env.py)
 - Training script: [`train.py`](train.py)
-- Colab training notebook: [`train_colab.ipynb`](train_colab.ipynb)
+- Colab training notebook: [`frontierops_training_lab.ipynb`](frontierops_training_lab.ipynb)
 - Evaluation script: [`evaluate_models.py`](evaluate_models.py)
 - Ablation script: [`ablation_eval.py`](ablation_eval.py)
 

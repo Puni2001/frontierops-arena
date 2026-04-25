@@ -507,7 +507,7 @@ footer a:hover { color: var(--text); }
     </div>
     <div>
       <div style="font-weight:700;color:var(--text);margin-bottom:.35rem;font-size:.9rem">RL + training</div>
-      GRPO via TRL (<span class="mono">train.py</span>), curriculum incl. <span class="mono">frontier</span> prompts, Colab notebook <span class="mono">train_colab.ipynb</span>. Anti–reward-hacking: urgent-spam + fake-empathy penalties; ablation script <span class="mono">ablation_eval.py</span> (hack penalty + governance ablation → <span class="mono">results/ablation_hack_penalty.json</span>).
+      GRPO via TRL (<span class="mono">train.py</span>), curriculum incl. <span class="mono">frontier</span> prompts, Colab notebook <span class="mono">frontierops_training_lab.ipynb</span>. Anti–reward-hacking: urgent-spam + fake-empathy penalties; ablation script <span class="mono">ablation_eval.py</span> (hack penalty + governance ablation → <span class="mono">results/ablation_hack_penalty.json</span>).
     </div>
     <div>
       <div style="font-weight:700;color:var(--text);margin-bottom:.35rem;font-size:.9rem">Evaluation &amp; reproducibility</div>
@@ -650,12 +650,12 @@ obs, reward, done, info = env.step(action)
       <div class="step-num">6</div>
       <div class="step-content">
         <div class="step-title">Train with GRPO (on Colab or with compute credits)</div>
-        <div class="step-desc">Run the full curriculum training. Open train_colab.ipynb on Colab with a T4 GPU.</div>
+        <div class="step-desc">Run the full curriculum training. Open frontierops_training_lab.ipynb on Colab with a T4 GPU.</div>
         <pre><span class="code-comment"># Full curriculum: easy → medium → hard</span>
 python train.py --model Qwen/Qwen2.5-0.5B-Instruct --curriculum easy,medium,hard
 
 <span class="code-comment"># Or open the Colab notebook</span>
-<span class="code-comment"># train_colab.ipynb → Runtime → T4 GPU → Run All</span></pre>
+<span class="code-comment"># frontierops_training_lab.ipynb → Runtime → T4 GPU → Run All</span></pre>
       </div>
     </div>
   </div>

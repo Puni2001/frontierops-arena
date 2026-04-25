@@ -12,7 +12,7 @@ Use this right before final push/submission.
 - [ ] Hugging Face Space URL is live and in `README.md`
 - [ ] Video/blog/slides links are in `README.md`
 - [ ] Training script is present and runnable (`train.py`)
-- [ ] Colab notebook is present (`train_colab.ipynb`)
+- [ ] Colab notebook is present (`frontierops_training_lab.ipynb`)
 - [ ] Reward curves are committed as image files
 
 ## Evidence Package

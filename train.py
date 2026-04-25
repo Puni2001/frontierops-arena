@@ -10,7 +10,7 @@ Usage:
   python train.py --task hard              # single task
   python train.py --model Qwen/Qwen2.5-1.5B-Instruct
 
-Colab: See train_colab.ipynb for the full notebook with reward curves.
+Colab: See frontierops_training_lab.ipynb for the full notebook with reward curves.
 """
 
 import argparse

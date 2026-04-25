@@ -117,7 +117,7 @@ Source: [`results/ablation_hack_penalty.json`](results/ablation_hack_penalty.jso
 - [`src/mock_api_stack.py`](src/mock_api_stack.py): degraded provider behavior (timeouts, rate-limits, fallback)
 
 ### Evaluation and scorecards
-- [`train.py`](train.py), [`train_colab.ipynb`](train_colab.ipynb): GRPO training pipeline
+- [`train.py`](train.py), [`frontierops_training_lab.ipynb`](frontierops_training_lab.ipynb): GRPO training pipeline
 - [`evaluate_models.py`](evaluate_models.py): baseline vs trained evaluation
 - [`ablation_eval.py`](ablation_eval.py): reward-hacking and governance ablation
 - [`server/app.py`](server/app.py): `/scorecard`, `/export/scorecard`, `/providers/health`
