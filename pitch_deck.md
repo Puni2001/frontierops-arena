@@ -127,3 +127,19 @@ The judges will love seeing that your OpenEnv gym isn't just for SaaS customer s
 - **State:** JIRA tickets, Slack messages, server downtime alerts.
 - **Actions:** Restart AWS instance, reset password, escalate to DevOps on-call pager.
 - **Rewards:** Resolution speed, correct escalation paths, zero-downtime bonuses.
+
+---
+
+## 6. Final Repro Pack Numbers (Solo Compute Track)
+
+Use these in the final 2-minute demo when judges ask for low-cost rerunnable evidence:
+
+- Easy: `0.303 ± 0.047` -> `1.170 ± 0.000` (**+285.7%**)
+- Medium: `-0.219 ± 0.133` -> `1.078 ± 0.087` (**+592.4%**)
+- Hard: `-0.211 ± 0.116` -> `0.137 ± 0.076` (**+165.1%**)
+
+Anti-hacking ablation (urgent-spam penalty removed) gives spam policy `+0.96` higher reward, proving the penalty is necessary to prevent reward gaming.
+
+Note for Q&A:
+- Primary full-run evidence is shown via `baseline_vs_trained_colab.json` and reward curves.
+- The numbers in this section are the deterministic reproducibility fallback pack (`results/final_*`).

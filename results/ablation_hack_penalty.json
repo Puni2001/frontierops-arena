@@ -1,0 +1,17 @@
+{
+  "with_penalty": {
+    "episodes": 20,
+    "mean_reward": -1.287,
+    "min_reward": -2.64,
+    "max_reward": -0.39,
+    "hack_penalty_trigger_count": 48
+  },
+  "without_penalty": {
+    "episodes": 20,
+    "mean_reward": -0.327,
+    "min_reward": -1.04,
+    "max_reward": 0.4,
+    "hack_penalty_trigger_count": 0
+  },
+  "delta_mean_reward_without_minus_with": 0.96
+}

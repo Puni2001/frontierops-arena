@@ -263,7 +263,7 @@ async def demo_episode(task_level: str = "hard", use_llm: bool = False, agent_ty
     model_name = None
     if use_llm:
         api_base = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
-        base_model = os.getenv("BASE_MODEL_NAME", os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct"))
+        base_model = os.getenv("BASE_MODEL_NAME", os.getenv("MODEL_NAME", "Qwen/Qwen2.5-0.5B-Instruct"))
         trained_model = os.getenv("TRAINED_MODEL_NAME", base_model)
         if agent_type == "base_llm":
             model_name = base_model

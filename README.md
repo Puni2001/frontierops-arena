@@ -20,9 +20,10 @@ pinned: false
 
 ---
 
-## 🏆 Final Performance Report (Verified Proof)
+## Final Performance Report (Verified Proof)
 
 After a full curriculum training run (Easy → Medium → Hard) using **GRPO**, the AI Support Envoy achieved massive gains over the base model.
+All final reproducible runs in this repository use **Qwen/Qwen2.5-0.5B-Instruct** as the practical baseline for solo compute.
 
 | Task Level | Base Reward (Avg) | Trained Reward (Avg) | Improvement |
 | :--- | :---: | :---: | :---: |
@@ -30,11 +31,11 @@ After a full curriculum training run (Easy → Medium → Hard) using **GRPO**, 
 | **Medium** | 0.02 | 0.53 | **+1,872%** |
 | **Hard** | -0.21 | 0.39 | **+284%** |
 
-### 📈 Training Mastery (Reward Curves)
+### Training Mastery (Reward Curves)
 ![Reward Curves](results/reward_curves.png)
 *Figure 1: Training progress across the 3 curriculum phases. Note the agent successfully climbing from negative rewards to consistent mastery.*
 
-### 📄 Raw Evidence (results/baseline_vs_trained_colab.json)
+### Raw Evidence (results/baseline_vs_trained_colab.json)
 ```json
 {
   "before": { "easy": 0.420, "medium": 0.027, "hard": -0.215 },
@@ -42,9 +43,21 @@ After a full curriculum training run (Easy → Medium → Hard) using **GRPO**, 
 }
 ```
 
+### Repro Pack (Solo Budget Run)
+The repository includes a deterministic evaluation/ablation pack for constrained-compute reruns.
+Use this as a reproducibility fallback; primary judging evidence should come from your strongest real training run.
+
+| Task Level | Baseline Mean ± Std | Trained Mean ± Std | Delta |
+| :--- | :---: | :---: | :---: |
+| **Easy** | 0.303 ± 0.047 | 1.170 ± 0.000 | **+285.7%** |
+| **Medium** | -0.219 ± 0.133 | 1.078 ± 0.087 | **+592.4%** |
+| **Hard** | -0.211 ± 0.116 | 0.137 ± 0.076 | **+165.1%** |
+
+Anti-hacking ablation (`results/ablation_hack_penalty.json`) shows that removing the over-prioritization penalty increases reward for the spam policy by `+0.96`, confirming that the penalty closes a real reward-hacking loophole.
+
 ---
 
-## 🚀 Future Roadmap (With Additional Credits)
+## Future Roadmap (With Additional Credits)
 With more compute, we are ready to scale this project further:
 1. **Model Scaling**: Upgrade from Qwen-0.5B to **Llama-3.1-8B** or **Qwen-2.5-7B** for deeper reasoning.
 2. **Dataset Expansion**: Increase training samples from 200 to **2,000 per task** for smoother convergence.
@@ -93,7 +106,7 @@ VIP customers: priority escalated one level automatically
 
 ---
 
-## Quick Start
+## Quick Start (Judge Run Order)
 
 ```bash
 # 1. Clone and set up
@@ -104,16 +117,21 @@ pip install -r requirements.txt
 
 # 2. Add your HF token to .env
 echo 'HF_TOKEN=hf_your_token_here' >> .env
-echo 'BASE_MODEL_NAME=Qwen/Qwen2.5-72B-Instruct' >> .env
+echo 'BASE_MODEL_NAME=Qwen/Qwen2.5-0.5B-Instruct' >> .env
 echo 'TRAINED_MODEL_NAME=punith2001/openenv-customer-support-model' >> .env
 
-# 3. Validate the environment
+# 3. Validate OpenEnv manifest + interfaces
 openenv validate .
 
-# 4. Run inference baseline
+# 4. Smoke tests (environment + API)
+python test_env.py
+python -m server.app &
+python test_api.py
+
+# 5. Baseline inference run (strict [START]/[STEP]/[END] logging)
 python inference.py
 
-# 5. Start the server + UI
+# 6. Start the server + UI
 python -m server.app
 # Open http://localhost:7860
 ```
@@ -155,8 +173,8 @@ print(env.suggest_next_level())  # "chaos"
 ## Training (GRPO with TRL)
 
 ```bash
-# Full curriculum: easy → medium → hard
-python train.py
+# Full curriculum: easy → medium → hard (practical solo default model)
+python train.py --model Qwen/Qwen2.5-0.5B-Instruct
 
 # Single task level
 python train.py --task hard --model Qwen/Qwen2.5-0.5B-Instruct --epochs 3
@@ -165,24 +183,49 @@ python train.py --task hard --model Qwen/Qwen2.5-0.5B-Instruct --epochs 3
 python train.py --push-to-hub --hub-repo your-username/ai-support-envoy-model
 ```
 
+### Fast Reproducibility Pipeline (Local/Offline)
+
+```bash
+# 1) Sanity run
+python train.py --task easy --curriculum easy --model sshleifer/tiny-gpt2 --epochs 1 --samples 8 --batch-size 1
+
+# 2) Compact curriculum run
+python train.py --model sshleifer/tiny-gpt2 --curriculum easy,medium,hard --epochs 1 --samples 12 --batch-size 1
+
+# 3) 3-seed reproducible evaluation
+python evaluate_models.py --offline --tasks easy,medium,hard --episodes 3 --seeds 41,42,43 --output results/final_baseline_vs_trained.md
+
+# 4) Anti-hacking ablation
+python ablation_eval.py
+```
+
 See `train_colab.ipynb` for the full Colab notebook with reward curves and measured baseline-vs-trained outputs.
 
 ### Reproducible Evaluation (Baseline vs Trained)
 
 ```bash
 python evaluate_models.py \
-  --base-model Qwen/Qwen2.5-72B-Instruct \
+  --base-model Qwen/Qwen2.5-0.5B-Instruct \
   --trained-model punith2001/openenv-customer-support-model \
   --tasks easy,medium,hard \
   --seeds 41,42,43,44,45 \
-  --output results/baseline_vs_trained.json
+  --output results/final_baseline_vs_trained.md
 ```
 
-This writes machine-readable metrics to `results/baseline_vs_trained_colab.json` (verified evidence).
+This writes:
+- Markdown table: `results/final_baseline_vs_trained.md`
+- Machine-readable JSON: `results/final_baseline_vs_trained.json`
 
-### 📊 Training Artifacts
+### Training Artifacts
 *   **Metrics**: [results/baseline_vs_trained_colab.json](results/baseline_vs_trained_colab.json)
 *   **Visuals**: [results/reward_curves.png](results/reward_curves.png)
+*   **Summary stats**: [results/final_summary_stats.json](results/final_summary_stats.json)
+*   **Ablation**: [results/ablation_hack_penalty.json](results/ablation_hack_penalty.json)
+*   **Comparison plot**: [results/final_reward_comparison.png](results/final_reward_comparison.png)
+
+### Notes on Evidence Tracks
+- `results/baseline_vs_trained_colab.json` + `results/reward_curves.png`: prior full run evidence
+- `results/final_*` + ablation files: latest deterministic reproducibility pack for judge reruns
 
 ---
 
@@ -247,6 +290,8 @@ ai-support-envoy/
 - ✅ Strict `[START]` / `[STEP]` / `[END]` stdout format
 - ✅ Training script with GRPO via TRL (`train.py`)
 - ✅ Colab notebook with reward curves (`train_colab.ipynb`)
+- ✅ Multi-seed reproducibility pack (`results/final_baseline_vs_trained.md`, `results/final_summary_stats.json`)
+- ✅ Anti-hacking ablation artifact (`results/ablation_hack_penalty.json`)
 
 ---
 

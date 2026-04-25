@@ -184,6 +184,15 @@ def train(args):
 
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
+    # Allow sanity runs on non-chat models (e.g., tiny GPT2) by supplying
+    # a minimal template that concatenates role/content pairs.
+    if getattr(tokenizer, "chat_template", None) is None:
+        tokenizer.chat_template = (
+            "{% for message in messages %}"
+            "{{ message['role'] }}: {{ message['content'] }}\n"
+            "{% endfor %}"
+            "{% if add_generation_prompt %}assistant: {% endif %}"
+        )
 
     # Curriculum: easy → medium → hard
     curriculum = args.curriculum.split(",") if args.curriculum else [args.task]

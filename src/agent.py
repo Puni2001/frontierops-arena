@@ -109,7 +109,8 @@ Respond ONLY with valid JSON:
                         {"role": "user", "content": user}
                     ],
                     temperature=0.2,
-                    max_tokens=300
+                    max_tokens=300,
+                    timeout=60.0,
                 )
                 content = resp.choices[0].message.content.strip()
                 if "```json" in content:

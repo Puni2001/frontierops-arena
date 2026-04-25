@@ -192,7 +192,7 @@ class CustomerSupportEnv:
 
     VALID_TASK_LEVELS = {"easy", "medium", "hard", "chaos", "multi_agent_triage", "multi_agent_resolver"}
 
-    def __init__(self, task_level: str = "easy", seed: Optional[int] = None):
+    def __init__(self, task_level: str = "easy", seed: Optional[int] = None, disable_hack_penalty: bool = False):
         if task_level not in self.VALID_TASK_LEVELS:
             raise ValueError(f"task_level must be one of {self.VALID_TASK_LEVELS}")
 
@@ -200,6 +200,7 @@ class CustomerSupportEnv:
             random.seed(seed)
 
         self.task_level = task_level
+        self.disable_hack_penalty = disable_hack_penalty
         self.task_config = getattr(TaskConfig, task_level)()
         self.knowledge_base = KNOWLEDGE_BASE
 
@@ -443,7 +444,11 @@ class CustomerSupportEnv:
                     total -= 0.3
                 
                 # ANTI-REWARD-HACKING: Penalty for spamming URGENT to maximize priority reward
-                if expected_priority in (Priority.LOW, Priority.MEDIUM) and action.value == "urgent":
+                if (
+                    not self.disable_hack_penalty
+                    and expected_priority in (Priority.LOW, Priority.MEDIUM)
+                    and action.value == "urgent"
+                ):
                     breakdown["over_prioritization_hack_penalty"] = -0.4
                     total -= 0.4
 

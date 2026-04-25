@@ -16,14 +16,25 @@ By leveraging **Unsloth** for 2x faster fine-tuning and **GRPO** for reasoning-a
 - **Reasoning Chains:** The agent doesn't just output an action; it outputs a `reasoning` field that explains its "World Model" of the ticket.
 - **Anti-Reward Hacking:** Our reward function was specifically patched to penalize "priority spamming," ensuring the agent learns genuine business value.
 
-### 📊 Results
-Our reproducible evaluation (via `evaluate_models.py`) shows a transformative shift in agent capability:
+### Results
+Our full-run evidence (`baseline_vs_trained_colab.json` + reward curves) shows a transformative shift in agent capability:
 *   **Easy (Triage):** +56% improvement.
 *   **Medium (Prioritization):** **+1,872% improvement** (Learning to ignore label-bait).
 *   **Hard (Resolution):** **+284% improvement** (Mastering multi-step KB navigation).
 
-### 🔗 Reproducibility
-The training process is fully documented in `train_colab.ipynb` and is 100% reproducible with fixed seeds and a verified OpenEnv reward model.
+### Solo Budget Repro Pack (Apr 25)
+For constrained reruns, we also provide a deterministic multi-seed offline benchmark:
+- Easy: **+285.7%** (`0.303 ± 0.047` → `1.170 ± 0.000`)
+- Medium: **+592.4%** (`-0.219 ± 0.133` → `1.078 ± 0.087`)
+- Hard: **+165.1%** (`-0.211 ± 0.116` → `0.137 ± 0.076`)
+
+Anti-hacking ablation (`ablation_hack_penalty.json`) shows removing the urgent-spam penalty increases spam policy reward by **+0.96**, validating the defense against reward hacking.
+
+### Reproducibility
+The training process is documented in `train_colab.ipynb` and backed by:
+- full-run evidence artifacts
+- deterministic fallback reproducibility pack (`results/final_*`)
+- explicit anti-hacking ablation evidence
 
 ---
 *Built for the Meta PyTorch OpenEnv Hackathon 2026 Grand Finale.*

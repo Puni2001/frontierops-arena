@@ -1,0 +1,203 @@
+[
+  {
+    "task": "easy",
+    "base": [
+      {
+        "model": "Qwen/Qwen2.5-0.5B-Instruct",
+        "task": "easy",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      },
+      {
+        "model": "Qwen/Qwen2.5-0.5B-Instruct",
+        "task": "easy",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      },
+      {
+        "model": "Qwen/Qwen2.5-0.5B-Instruct",
+        "task": "easy",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      }
+    ],
+    "trained": [
+      {
+        "model": "punith2001/openenv-customer-support-model",
+        "task": "easy",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      },
+      {
+        "model": "punith2001/openenv-customer-support-model",
+        "task": "easy",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      },
+      {
+        "model": "punith2001/openenv-customer-support-model",
+        "task": "easy",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      }
+    ]
+  },
+  {
+    "task": "medium",
+    "base": [
+      {
+        "model": "Qwen/Qwen2.5-0.5B-Instruct",
+        "task": "medium",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      },
+      {
+        "model": "Qwen/Qwen2.5-0.5B-Instruct",
+        "task": "medium",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      },
+      {
+        "model": "Qwen/Qwen2.5-0.5B-Instruct",
+        "task": "medium",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      }
+    ],
+    "trained": [
+      {
+        "model": "punith2001/openenv-customer-support-model",
+        "task": "medium",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      },
+      {
+        "model": "punith2001/openenv-customer-support-model",
+        "task": "medium",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      },
+      {
+        "model": "punith2001/openenv-customer-support-model",
+        "task": "medium",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      }
+    ]
+  },
+  {
+    "task": "hard",
+    "base": [
+      {
+        "model": "Qwen/Qwen2.5-0.5B-Instruct",
+        "task": "hard",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      },
+      {
+        "model": "Qwen/Qwen2.5-0.5B-Instruct",
+        "task": "hard",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      },
+      {
+        "model": "Qwen/Qwen2.5-0.5B-Instruct",
+        "task": "hard",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      }
+    ],
+    "trained": [
+      {
+        "model": "punith2001/openenv-customer-support-model",
+        "task": "hard",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      },
+      {
+        "model": "punith2001/openenv-customer-support-model",
+        "task": "hard",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      },
+      {
+        "model": "punith2001/openenv-customer-support-model",
+        "task": "hard",
+        "avg_reward": -0.15,
+        "success_rate": 0.0,
+        "hacking_attempts": {
+          "priority_spam": 0,
+          "empathy_spam": 0
+        }
+      }
+    ]
+  }
+]

@@ -25,3 +25,4 @@ Thumbs.db
 *.log
 baseline_scores.json
 .env
+checkpoints/
