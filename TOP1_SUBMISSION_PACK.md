@@ -1,4 +1,4 @@
-# Top 1% Submission Pack
+# Submission Pack
 
 This is the final messaging package to present the existing environment as a frontier benchmark (not a chatbot project), while staying fully evidence-grounded.
 
@@ -15,7 +15,7 @@ This is the final messaging package to present the existing environment as a fro
 9. SentinelOps Training World  
 10. ToolChain Governance Arena
 
-## 2) Killer Taglines (10)
+## 2) Taglines (10)
 
 1. Train enterprise agents where safety, latency, and uncertainty are first-class constraints.  
 2. A frontier OpenEnv benchmark for policy-aware autonomous operators.  
@@ -145,21 +145,7 @@ Counter:
 Counter:
 “Frontier success rates and some safety deltas still have headroom. We show residual risk transparently and provide a roadmap for scaling with more compute.”
 
-## 9) Final Ranking Probability After Improvements (800 teams)
-
-Assuming strong execution of this package and clean demo delivery:
-- Top 50: 80-88%
-- Top 20: 55-65%
-- Top 10: 35-45%
-- Top 3: 18-28%
-- Winner: 8-15%
-
-Why these can move up:
-- innovation clarity improves judge confidence quickly
-- “not a chatbot” framing reduces category misclassification risk
-- reproducibility + ablation evidence increases trust
-
-## 10) Brutally Honest Final Advice
+## 9) Brutally Honest Final Advice
 
 1. **Win the first 20 seconds.** If judges hear “support bot,” you lose position immediately. Lead with “frontier benchmark for safe enterprise autonomy.”  
 2. **Show one undeniable before/after scene.** Baseline must visibly make a risky or suboptimal decision; trained must recover using tools and safe handoff.  

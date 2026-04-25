@@ -115,29 +115,6 @@ section { max-width: 1000px; margin: 0 auto; padding: 0 2rem 5rem; }
 .btn-run .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.3); border-top-color: white; border-radius: 50%; animation: spin .7s linear infinite; display: none; }
 .btn-run.loading .spinner { display: block; }
 .btn-run.loading .run-icon { display: none; }
-.demo-actions { display:flex; gap:.5rem; flex-wrap:wrap; margin-left:.5rem; }
-.btn-mini {
-  background: rgba(99,102,241,.12);
-  color: #c7d2fe;
-  border: 1px solid rgba(99,102,241,.28);
-  padding: .4rem .7rem;
-  border-radius: .55rem;
-  font-size: .73rem;
-  cursor: pointer;
-}
-.btn-mini:hover { background: rgba(99,102,241,.22); }
-.compare-board {
-  margin-top: 1rem;
-  background: rgba(56,189,248,.06);
-  border: 1px solid rgba(56,189,248,.2);
-  border-radius: .8rem;
-  padding: .9rem 1rem;
-  font-size: .8rem;
-}
-.compare-board table { width:100%; border-collapse: collapse; margin-top:.5rem; }
-.compare-board th,.compare-board td { padding:.35rem .4rem; border-bottom:1px solid rgba(255,255,255,.06); text-align:left; }
-.compare-board tr:last-child td { border-bottom:none; }
-
 /* DEMO MODE OVERLAY */
 .demo-overlay {
   position: fixed;
@@ -314,7 +291,7 @@ footer a:hover { color: var(--text); }
     <a href="#frontier">Frontier Stack</a>
     <a href="#judge-checklist">Judge Checklist</a>
     <a href="#rewards">Reward Model</a>
-    <a href="/history">📜 History & Logs</a>
+    <a href="/history">History & Logs</a>
     <a href="#setup">Setup</a>
     <a href="/docs">API Docs</a>
   </div>
@@ -395,10 +372,6 @@ footer a:hover { color: var(--text); }
         <span class="run-icon">▶ Run Episode</span>
         <span class="spinner"></span>
       </button>
-      <div class="demo-actions">
-        <button class="btn-mini" onclick="runComparison()">Run Baseline vs Trained</button>
-        <button class="btn-mini" onclick="injectJudgeNarration()">Show Judge Narration</button>
-      </div>
     </div>
     <div class="demo-body" id="demo-body">
       <div class="demo-placeholder">
@@ -934,49 +907,6 @@ function toggleDemoMode(forceValue) {
   overlay.classList.toggle('active', demoModeEnabled);
 }
 
-function injectJudgeNarration() {
-  const body = document.getElementById('demo-body');
-  body.insertAdjacentHTML('afterbegin', `
-    <div class="compare-board">
-      <strong>Judge framing:</strong> This benchmark tests long-horizon policy quality under uncertainty, not single-turn response style.
-    </div>
-  `);
-}
-
-async function runComparison() {
-  const level = document.getElementById('level-select').value;
-  const body = document.getElementById('demo-body');
-  body.innerHTML = `<div class="demo-placeholder"><div class="icon" style="animation:spin 1s linear infinite;display:inline-block">⚙</div><div style="margin-top:.75rem">Running baseline and trained episodes for <strong>${level}</strong>...</div></div>`;
-
-  try {
-    const [baseRes, trainedRes] = await Promise.all([
-      fetch(`/demo?task_level=${level}&use_llm=true&agent_type=base_llm`),
-      fetch(`/demo?task_level=${level}&use_llm=true&agent_type=rl_llm`)
-    ]);
-    if (!baseRes.ok || !trainedRes.ok) throw new Error('Comparison run failed. Verify model endpoints.');
-    const baseData = await baseRes.json();
-    const trainedData = await trainedRes.json();
-    const delta = trainedData.total_reward - baseData.total_reward;
-    const deltaText = `${delta >= 0 ? '+' : ''}${delta.toFixed(4)}`;
-    const deltaClass = delta >= 0 ? 'reward-pos' : 'reward-neg';
-
-    body.innerHTML = `
-      <div class="compare-board">
-        <strong>Baseline vs Trained — ${level}</strong>
-        <table>
-          <tr><th>Agent</th><th>Total Reward</th><th>Steps</th><th>Model</th></tr>
-          <tr><td>Base LLM</td><td>${baseData.total_reward.toFixed(4)}</td><td>${baseData.steps.length}</td><td>${baseData.model_name || 'base_llm'}</td></tr>
-          <tr><td>Trained LLM</td><td>${trainedData.total_reward.toFixed(4)}</td><td>${trainedData.steps.length}</td><td>${trainedData.model_name || 'rl_llm'}</td></tr>
-          <tr><td><strong>Delta</strong></td><td class="${deltaClass}"><strong>${deltaText}</strong></td><td>-</td><td>-</td></tr>
-        </table>
-      </div>
-      <div style="margin-top:.85rem;color:var(--muted);font-size:.8rem">Tip: run single episodes below to inspect step-by-step action quality and safety decisions.</div>
-    `;
-    loadMetrics();
-  } catch (e) {
-    body.innerHTML = `<div class="demo-placeholder" style="color:var(--r)"><div class="icon">⚠️</div><div>${e.message}</div></div>`;
-  }
-}
 </script>
 </body>
 </html>

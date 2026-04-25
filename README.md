@@ -9,9 +9,7 @@ pinned: false
 
 # FrontierOps Arena
 
-**A frontier OpenEnv benchmark for training policy-aware, tool-using enterprise agents under partial observability, delayed rewards, and safety constraints.**
-
-> Former project name: **AI Support Envoy** (same codebase, upgraded benchmark framing).
+**An OpenEnv benchmark for training policy-aware, tool-using enterprise agents under partial observability, delayed rewards, and safety constraints.**
 
 **Live assets**
 - Technical blog/report: [Grand Finale Submission Report](https://huggingface.co/spaces/punith2001/openenv-customer-support/discussions/1)
@@ -25,15 +23,15 @@ pinned: false
 
 ---
 
-## 10-Second Impression
+## Problem and Scope
 
-**Why this exists:** LLMs are weak at long-horizon enterprise workflows because they are rarely trained under uncertainty, conflicting objectives, tool outages, and governance constraints.
+LLMs often fail in enterprise workflows because they are not trained under uncertainty, conflicting objectives, tool outages, and governance constraints.
 
-**What this is:** an OpenEnv-compliant, evidence-gated benchmark for training robust autonomous operators with measurable safety/reliability trade-offs.
+This project provides an OpenEnv-compliant benchmark to train and evaluate behavior under those constraints.
 
 ---
 
-## 30-Second Judge Fast Path
+## Judge Fast Path
 
 1. One-page evidence summary: [`results/judge_scorecard.md`](results/judge_scorecard.md)
 2. Q&A and risk handling: [`JUDGE_QA.md`](JUDGE_QA.md)
@@ -50,7 +48,7 @@ python -m server.app   # then GET /export/scorecard
 
 ---
 
-## 60-Second Evidence Snapshot
+## Evidence Snapshot
 
 ### Proof of learning (primary training run)
 
@@ -84,9 +82,9 @@ Source: [`results/ablation_hack_penalty.json`](results/ablation_hack_penalty.jso
 
 ---
 
-## Why This Is Unique
+## What This Tests
 
-- **Frontier benchmark, not a wrapper:** environment state includes SLA drift, queue pressure, sentiment, governance, and tool health.
+- **Environment benchmark, not a wrapper:** state includes SLA drift, queue pressure, sentiment, governance, and tool health.
 - **Partially observable world model:** agents act on incomplete, noisy, multilingual inputs with delayed consequences.
 - **Policy-aware autonomy:** high-risk cases require evidence-gated actions (`tool_call`, `human_review_required`, `legal_hold`).
 - **Failure recovery:** provider-style latency/timeout/rate-limit/fallback dynamics are simulated and scored.
@@ -179,7 +177,7 @@ python ablation_eval.py
 
 ---
 
-## Why It Beats Common Baselines
+## Differentiation vs Common Baselines
 
 - **Not a chatbot wrapper:** policy is trained in an interactive environment, not prompt-tuned on static responses.
 - **Not simple RAG:** success depends on action sequencing, escalation judgment, and tool-grounded evidence.
