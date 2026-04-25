@@ -476,17 +476,20 @@ class CustomerSupportEnv:
             result = {"tool": tool_name, "status": "error", "error": str(exc)}
 
         evidence_key = evidence_map.get(tool_name)
-        if evidence_key and evidence_key not in ticket.evidence_collected:
+        had_evidence = evidence_key in ticket.evidence_collected if evidence_key else False
+        if evidence_key and not had_evidence:
             ticket.evidence_collected.append(evidence_key)
         if tool_name == "legal_escalation" and "policy_reference" not in ticket.evidence_collected:
             ticket.evidence_collected.append("policy_reference")
+        result["new_evidence"] = bool(evidence_key and not had_evidence)
+        result["evidence_key"] = evidence_key
 
         self.telemetry["tool_calls"] += 1
         if result.get("status") == "fallback":
             self.telemetry["tool_fallbacks"] += 1
         return result
 
-    def _calculate_reward(self, action: Action, ticket: Ticket) -> Tuple[float, Dict]:
+    def _calculate_reward(self, action: Action, ticket: Ticket, tool_result: Optional[Dict] = None) -> Tuple[float, Dict]:
         breakdown: Dict[str, float] = {}
         total = 0.0
 
@@ -616,15 +619,22 @@ class CustomerSupportEnv:
             breakdown["safe_handoff_bonus"] = 0.25
             total += 0.25
         elif action.action_type == "tool_call":
-            if ticket.high_risk_flags and ticket.evidence_collected:
+            tool_result = tool_result or {}
+            new_evidence = bool(tool_result.get("new_evidence"))
+            status = tool_result.get("status")
+            if status in ("unsupported_tool", "error"):
+                breakdown["invalid_tool_call_penalty"] = -0.18
+                total -= 0.18
+            elif new_evidence and ticket.high_risk_flags:
                 breakdown["evidence_collection_bonus"] = 0.18
                 total += 0.18
-            elif ticket.evidence_collected:
+            elif new_evidence:
                 breakdown["tool_use_bonus"] = 0.08
                 total += 0.08
             else:
-                breakdown["wasted_tool_call_penalty"] = -0.08
-                total -= 0.08
+                # Prevent reward farming by repeating the same tool call.
+                breakdown["duplicate_tool_call_penalty"] = -0.12
+                total -= 0.12
 
         if ticket.high_risk_flags:
             decision = governance_gate(action.action_type, ticket.high_risk_flags, ticket.evidence_collected)
@@ -690,7 +700,7 @@ class CustomerSupportEnv:
         if action.action_type == "tool_call":
             tool_result = self._execute_tool_call(action, current)
 
-        reward, breakdown = self._calculate_reward(action, current)
+        reward, breakdown = self._calculate_reward(action, current, tool_result=tool_result)
         self.telemetry["total_steps"] += 1
         self.episode_rewards.append(reward)
         self.recent_actions.append(f"{action.action_type}:{action.value}")

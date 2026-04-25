@@ -296,6 +296,8 @@ async def demo_episode(task_level: str = "hard", use_llm: bool = False, agent_ty
         print(f"[DEMO] Running with agent_type={agent_type}, model={model_name}")
         agent_live = SupportAgent(model_name=model_name, api_key=hf_token, base_url=api_base)
 
+    repeated_action_count = 0
+    previous_action_signature = ""
     while not env.done:
         t = obs.current_ticket
         if not t:
@@ -341,6 +343,29 @@ async def demo_episode(task_level: str = "hard", use_llm: bool = False, agent_ty
                     action = Action(action_type="resolve",
                                     value=f"Apologize for the inconvenience. {kb_steps}. Following up to confirm.",
                                     reasoning="KB-aligned resolution with empathy")
+
+        action_signature = f"{action.action_type}:{action.value}"
+        if action_signature == previous_action_signature:
+            repeated_action_count += 1
+        else:
+            repeated_action_count = 1
+            previous_action_signature = action_signature
+
+        # Demo anti-loop guard: prevent repeated tool-call farming.
+        if (
+            task_level == "frontier"
+            and action.action_type == "tool_call"
+            and repeated_action_count >= 3
+        ):
+            fallback_action = "legal_hold" if obs.governance_hint == "legal_hold" else "human_review_required"
+            action = Action(
+                action_type=fallback_action,
+                value="Loop-prevention policy handoff",
+                reasoning="Repeated identical tool_call detected in demo loop",
+            )
+            action_signature = f"{action.action_type}:{action.value}"
+            repeated_action_count = 1
+            previous_action_signature = action_signature
 
         obs_next, reward, done, info = env.step(action)
 

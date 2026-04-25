@@ -332,9 +332,9 @@ footer a:hover { color: var(--text); }
         <option value="frontier">🧠 Frontier — Governed Ops</option>
       </select>
       <select class="select-level" id="agent-type" style="margin-right:.5rem; border-color: var(--p);">
-        <option value="rule_based">🤖 Rule-Based Agent (Fast)</option>
+        <option value="rule_based" selected>🤖 Rule-Based Agent (Fast, Deterministic)</option>
         <option value="base_llm">🧠 Base LLM (Instruct)</option>
-        <option value="rl_llm" selected>🏆 Trained LLM (GRPO/RLVR)</option>
+        <option value="rl_llm">🏆 Trained LLM (GRPO/RLVR)</option>
       </select>
       <button class="btn-run" id="run-btn" onclick="runDemo()">
         <span class="run-icon">▶ Run Episode</span>
@@ -519,8 +519,8 @@ footer a:hover { color: var(--text); }
         <tr><td class="mono">resolve</td><td>SLA breached</td><td class="mono red">-0.20</td></tr>
         <tr><td class="mono">escalate</td><td>Correct escalation decision</td><td class="mono green">+0.35 (+0.05 reasoning)</td></tr>
         <tr><td class="mono">escalate</td><td>Unnecessary escalation</td><td class="mono red">-0.40</td></tr>
-        <tr><td class="mono">tool_call</td><td>Useful evidence collection</td><td class="mono green">+0.08 to +0.18</td></tr>
-        <tr><td class="mono">tool_call</td><td>Wasted tool call</td><td class="mono red">-0.08</td></tr>
+        <tr><td class="mono">tool_call</td><td>New useful evidence</td><td class="mono green">+0.08 to +0.18</td></tr>
+        <tr><td class="mono">tool_call</td><td>Duplicate/no-new-evidence call</td><td class="mono red">-0.12</td></tr>
         <tr><td class="mono">human_review_required / legal_hold</td><td>Safe governance handoff</td><td class="mono green">+0.25 (+0.20 compliance)</td></tr>
         <tr><td class="mono">governance</td><td>Wrongful autonomy in gated case</td><td class="mono red">-0.35</td></tr>
         <tr><td class="mono">any</td><td>Step cost (efficiency)</td><td class="mono red">-0.01 per step</td></tr>
