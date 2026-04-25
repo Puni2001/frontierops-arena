@@ -18,11 +18,16 @@ from typing import Any, Dict, Optional
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import time
+import json
+import glob
+import base64
+import random
 from fastapi import FastAPI, HTTPException, Header
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from src.customer_support_env import CustomerSupportEnv, Action
+from src.customer_support_env import CustomerSupportEnv, Action, KNOWLEDGE_BASE, TicketCategory
 
 app = FastAPI(
     title="AI Support Envoy — OpenEnv",
@@ -150,11 +155,6 @@ async def health():
     return {"status": "healthy", "service": "ai-support-envoy", "version": "2.0.0",
             "active_sessions": len(_sessions)}
 
-import time
-import json
-import glob
-import base64
-
 @app.post("/api/runs")
 async def save_run(request: RunUploadRequest):
     timestamp = int(time.time())
@@ -253,9 +253,6 @@ async def demo_episode(task_level: str = "hard", use_llm: bool = False, agent_ty
     """
     if task_level not in VALID_TASK_LEVELS:
         raise HTTPException(400, f"task_level must be one of {sorted(VALID_TASK_LEVELS)}")
-
-    from src.customer_support_env import KNOWLEDGE_BASE, TicketCategory
-    import random
 
     env = CustomerSupportEnv(task_level=task_level, seed=random.randint(0, 9999))
     obs = env.reset()

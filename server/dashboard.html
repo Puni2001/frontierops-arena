@@ -607,10 +607,12 @@ function actionBadge(type) {
 function rewardColor(r) { return r >= 0 ? 'reward-pos' : 'reward-neg'; }
 
 function renderBreakdown(bd) {
+  if (!bd) return '';
   return Object.entries(bd).map(([k, v]) => {
-    const cls = v >= 0 ? 'rb-pos' : 'rb-neg';
-    const sign = v >= 0 ? '+' : '';
-    return `<span class="rb-item ${cls}">${k}: ${sign}${v.toFixed(3)}</span>`;
+    const val = Number(v) || 0;
+    const cls = val >= 0 ? 'rb-pos' : 'rb-neg';
+    const sign = val >= 0 ? '+' : '';
+    return `<span class="rb-item ${cls}">${k.replace(/_/g, ' ')}: ${sign}${val.toFixed(3)}</span>`;
   }).join('');
 }
 
