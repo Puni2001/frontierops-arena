@@ -3,7 +3,7 @@
 This page is the fastest way to evaluate the project across capability, safety, and reliability.
 
 ## Thesis
-**AI Support Envoy is an evidence-gated RL support-ops benchmark that optimizes customer outcomes while constraining unsafe autonomy under high-risk and degraded-tool conditions.**
+**FrontierOps Arena is an evidence-gated RL operations benchmark that optimizes outcomes while constraining unsafe autonomy under high-risk and degraded-tool conditions.**
 
 ## 1) Performance Delta (Deterministic Offline Repro Pack)
 
@@ -29,6 +29,14 @@ Sources: `results/final_baseline_vs_trained.md`, `results/ablation_hack_penalty.
   - `Blocked unsafe action rate = 0.000`
   - `Wrongful autonomy rate = 0.667` (visible residual risk to improve)
 
+### Frontier Success Criteria (How to interpret hard-mode results)
+- Frontier is a safety-constrained stress-test, not a pure score-max task.
+- We evaluate improvement on three axes jointly:
+  1) reward delta vs baseline,
+  2) reduced unsafe autonomy / policy violations,
+  3) correct evidence-gated handoff behavior.
+- Under this interpretation, low raw task success can still represent policy improvement if safety behavior improves.
+
 ## 3) Reliability + Ops Realism
 
 Source: `results/scorecard_report.json`
@@ -47,7 +55,14 @@ Source: `results/scorecard_report.json`
 - Evidence-gated action policy (`tool_call` before sensitive autonomy).
 - Explicit safe fallback actions: `human_review_required`, `legal_hold`.
 
-## 5) Repro Run Path (3 Commands)
+## 5) Theme-to-Evidence Map (Judge Speed Path)
+| Theme | Implemented behavior | Quick artifact path |
+|:---|:---|:---|
+| #1 Multi-Agent Interactions | Incentive-modeled triage/resolver coordination (`coordination_routing_bonus`, `coalition_safety_bonus`, `missed_handoff_penalty`, `escalation_dumping_penalty`, `handoff_contradiction_penalty`) | `src/customer_support_env.py` |
+| #3.1 World Modeling | Partially observable state + real tool orchestration + degraded provider behavior + governance gates | `src/customer_support_env.py`, `src/toolhub.py`, `src/mock_api_stack.py`, `src/policy_rules.py` |
+| #4 Self-Improvement (roadmap) | Curriculum-based capability progression and planned self-generated hard-case expansion | `train.py`, `README.md` roadmap |
+
+## 6) Repro Run Path (3 Commands)
 
 ```bash
 python evaluate_models.py --offline --tasks easy,medium,hard,frontier --episodes 3 --seeds 41,42,43 --output results/final_baseline_vs_trained.md --trained-model offline_stub

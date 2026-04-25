@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-AI Support Envoy — GRPO Training Script
-=========================================
+FrontierOps Arena — GRPO Training Script
+========================================
 Uses TRL's GRPOTrainer to fine-tune an LLM on the customer support environment.
 The environment reward signal drives policy improvement.
 
@@ -244,7 +244,7 @@ def train(args):
 # ── CLI ──────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Train LLM on AI Support Envoy environment")
+    parser = argparse.ArgumentParser(description="Train LLM on FrontierOps Arena environment")
     parser.add_argument("--model", default="Qwen/Qwen2.5-0.5B-Instruct",
                         help="HuggingFace model ID")
     parser.add_argument("--task", default="easy",

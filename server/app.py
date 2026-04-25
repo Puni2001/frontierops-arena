@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-OpenEnv FastAPI Server — AI Support Envoy
-==========================================
+OpenEnv FastAPI Server — FrontierOps Arena
+===========================================
 Endpoints:
   GET  /          — Dashboard UI
   GET  /health    — Health check
@@ -32,8 +32,8 @@ from src.agent import SupportAgent
 from src.telemetry import aggregate_slo_kpi
 
 app = FastAPI(
-    title="AI Support Envoy — OpenEnv",
-    description="Multi-level customer support RL environment with multi-agent and chaos modes",
+    title="FrontierOps Arena — OpenEnv",
+    description="Multi-level enterprise operations RL environment with multi-agent and frontier modes",
     version="2.0.0"
 )
 
@@ -79,83 +79,14 @@ async def history_page():
 
 @app.get("/ui", response_class=HTMLResponse)
 async def home():
-    return """<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>AI Support Envoy | OpenEnv</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{--p:#6366f1;--g:#22c55e;--w:#f59e0b;--r:#ef4444;--bg:#0a0f1e;--card:#111827;--border:rgba(255,255,255,0.07)}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Outfit',sans-serif;background:var(--bg);color:#e2e8f0;min-height:100vh;padding:2rem}
-    .hero{text-align:center;padding:3rem 1rem 2rem}
-    .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);color:#818cf8;padding:.4rem 1rem;border-radius:2rem;font-size:.75rem;font-weight:600;letter-spacing:.05em;margin-bottom:1.5rem}
-    .dot{width:7px;height:7px;background:var(--g);border-radius:50%;box-shadow:0 0 8px var(--g);animation:pulse 2s infinite}
-    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-    h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:700;background:linear-gradient(135deg,#818cf8,#c084fc,#38bdf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.75rem}
-    .subtitle{color:#64748b;font-size:1.05rem;max-width:600px;margin:0 auto 2.5rem}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;max-width:900px;margin:0 auto 3rem}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:1rem;padding:1.5rem;transition:border-color .2s}
-    .card:hover{border-color:rgba(99,102,241,0.4)}
-    .card-label{font-size:.7rem;color:#475569;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem}
-    .card-val{font-size:1.4rem;font-weight:600;color:#f1f5f9}
-    .card-sub{font-size:.75rem;color:#64748b;margin-top:.25rem}
-    .levels{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;margin-bottom:3rem}
-    .level{background:var(--card);border:1px solid var(--border);border-radius:.75rem;padding:.75rem 1.25rem;font-size:.85rem}
-    .level span{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:.5rem}
-    .easy span{background:#22c55e}.medium span{background:#f59e0b}.hard span{background:#ef4444}.chaos span{background:#a855f7}.multi span{background:#38bdf8}
-    .endpoints{max-width:700px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:1rem;overflow:hidden}
-    .ep-row{display:flex;align-items:center;gap:1rem;padding:1rem 1.5rem;border-bottom:1px solid var(--border)}
-    .ep-row:last-child{border-bottom:none}
-    .method{font-size:.7rem;font-weight:700;padding:.25rem .6rem;border-radius:.4rem;min-width:48px;text-align:center}
-    .get{background:rgba(34,197,94,.15);color:#22c55e}.post{background:rgba(99,102,241,.15);color:#818cf8}
-    .ep-path{font-family:monospace;font-size:.9rem;color:#e2e8f0}
-    .ep-desc{font-size:.8rem;color:#64748b;margin-left:auto}
-    footer{text-align:center;color:#334155;font-size:.8rem;margin-top:3rem}
-  </style>
-</head>
-<body>
-  <div class="hero">
-    <div class="badge"><div class="dot"></div>OPENENV COMPLIANT · v2.0</div>
-    <h1>AI Support Envoy</h1>
-    <p class="subtitle">A production-grade RL environment for intelligent ticket triage, prioritization, and resolution — with multi-agent and chaos modes.</p>
-  </div>
-
-  <div class="grid">
-    <div class="card"><div class="card-label">Status</div><div class="card-val" style="color:#22c55e">Healthy</div><div class="card-sub">All systems operational</div></div>
-    <div class="card"><div class="card-label">Theme</div><div class="card-val">3.1 + 1</div><div class="card-sub">World Modeling + Multi-Agent</div></div>
-    <div class="card"><div class="card-label">Task Levels</div><div class="card-val">6</div><div class="card-sub">easy → chaos → multi-agent</div></div>
-    <div class="card"><div class="card-label">Reward Model</div><div class="card-val">Dense</div><div class="card-sub">Shaped + SLA urgency signal</div></div>
-  </div>
-
-  <div class="levels">
-    <div class="level easy"><span></span>Easy — Triage</div>
-    <div class="level medium"><span></span>Medium — Prioritization</div>
-    <div class="level hard"><span></span>Hard — Full Resolution</div>
-    <div class="level chaos"><span></span>Chaos — Ticket Storm</div>
-    <div class="level multi"><span></span>Multi-Agent Triage</div>
-    <div class="level multi"><span></span>Multi-Agent Resolver</div>
-  </div>
-
-  <div class="endpoints">
-    <div class="ep-row"><span class="method get">GET</span><span class="ep-path">/health</span><span class="ep-desc">Health check</span></div>
-    <div class="ep-row"><span class="method post">POST</span><span class="ep-path">/reset</span><span class="ep-desc">Start new episode</span></div>
-    <div class="ep-row"><span class="method post">POST</span><span class="ep-path">/step</span><span class="ep-desc">Execute action</span></div>
-    <div class="ep-row"><span class="method get">GET</span><span class="ep-path">/state</span><span class="ep-desc">Current state</span></div>
-    <div class="ep-row"><span class="method get">GET</span><span class="ep-path">/metrics</span><span class="ep-desc">Aggregated metrics</span></div>
-    <div class="ep-row"><span class="method get">GET</span><span class="ep-path">/docs</span><span class="ep-desc">Interactive API docs</span></div>
-  </div>
-
-  <footer>AI Support Envoy · OpenEnv Hackathon · Theme #3.1 World Modeling + Theme #1 Multi-Agent</footer>
-</body>
-</html>"""
+    # Keep legacy /ui route but serve the canonical dashboard to avoid stale duplicate UI.
+    return open(os.path.join(os.path.dirname(__file__), "dashboard.html")).read()
 
 # ── API Endpoints ────────────────────────────────────────────
 
 @app.get("/health")
 async def health():
-    return {"status": "healthy", "service": "ai-support-envoy", "version": "2.0.0",
+    return {"status": "healthy", "service": "frontierops-arena", "version": "2.0.0",
             "active_sessions": len(_sessions)}
 
 @app.post("/api/runs")
@@ -172,7 +103,7 @@ async def save_run(request: RunUploadRequest):
                 header, encoded = request.image_base64.split(",", 1)
             else:
                 encoded = request.image_base64
-            data = base64.b64decode(encoded)
+            data = base64.b64decode(encoded, validate=True)
             img_filename = "reward_curve.png"
             with open(os.path.join(run_dir, img_filename), "wb") as f:
                 f.write(data)
@@ -201,8 +132,8 @@ async def list_runs():
         try:
             with open(m, "r") as f:
                 runs.append(json.load(f))
-        except:
-            pass
+        except (OSError, json.JSONDecodeError) as exc:
+            print(f"[WARN] Skipping invalid run metadata file {m}: {exc}")
     runs.sort(key=lambda x: x.get("timestamp", 0), reverse=True)
     return runs
 
@@ -439,7 +370,7 @@ def main():
     import uvicorn
     port = int(os.getenv("PORT", 7860))
     host = os.getenv("HOST", "0.0.0.0")
-    print(f"Starting AI Support Envoy on {host}:{port}")
+    print(f"Starting FrontierOps Arena on {host}:{port}")
     uvicorn.run(app, host=host, port=port)
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-AI Support Envoy — Inference Script
-=====================================
+FrontierOps Arena — Inference Script
+====================================
 STDOUT FORMAT (mandatory):
   [START] task=<task_name> env=<benchmark> model=<model_name>
   [STEP]  step=<n> action=<action_str> reward=<0.00> done=<true|false> error=<msg|null>

@@ -498,6 +498,12 @@ class CustomerSupportEnv:
         expected_priority = self._calculate_expected_priority(
             ticket.category, ticket.sentiment, ticket.is_vip, ticket.previous_contacts
         )
+        should_escalate_context = (
+            ticket.sentiment <= -0.7
+            or ticket.category == TicketCategory.COMPLAINT
+            or (ticket.is_vip and ticket.sentiment < -0.4)
+            or ticket.previous_contacts >= 4
+        )
 
         if action.action_type == "categorize":
             val = str(action.value).strip().lower()
@@ -599,10 +605,7 @@ class CustomerSupportEnv:
             action_lower = action.value.lower()
 
             should_escalate = (
-                ticket.sentiment <= -0.7
-                or ticket.category == TicketCategory.COMPLAINT
-                or ticket.is_vip and ticket.sentiment < -0.4
-                or ticket.previous_contacts >= 4
+                should_escalate_context
                 or any(trigger in action_lower for trigger in escalate_triggers)
             )
 
@@ -652,6 +655,36 @@ class CustomerSupportEnv:
                     breakdown["wrongful_autonomy_penalty"] = -0.35
                     total -= 0.35
                     self.telemetry["wrongful_autonomy"] += 1
+
+        # Theme #1 depth: explicit incentive modeling for multi-agent coordination quality.
+        if self.task_level == "multi_agent_triage":
+            if action.action_type == "categorize":
+                if action.value == ticket.category.value and not should_escalate_context:
+                    breakdown["coordination_routing_bonus"] = 0.12
+                    total += 0.12
+                elif should_escalate_context:
+                    # Penalize triage agents that avoid safe handoff under risky contexts.
+                    breakdown["missed_handoff_penalty"] = -0.15
+                    total -= 0.15
+            elif action.action_type == "escalate":
+                if should_escalate_context:
+                    breakdown["coalition_safety_bonus"] = 0.2
+                    total += 0.2
+                else:
+                    # Penalize "escalation dumping" to model conflicting incentives.
+                    breakdown["escalation_dumping_penalty"] = -0.2
+                    total -= 0.2
+
+        elif self.task_level == "multi_agent_resolver":
+            triage_signal = self.last_triage_decision or ""
+            if triage_signal.startswith("category="):
+                triage_category = triage_signal.split("=", 1)[1]
+                if action.action_type == "resolve" and triage_category == ticket.category.value and not should_escalate_context:
+                    breakdown["handoff_alignment_bonus"] = 0.1
+                    total += 0.1
+                elif action.action_type == "escalate" and not should_escalate_context:
+                    breakdown["handoff_contradiction_penalty"] = -0.1
+                    total -= 0.1
 
         # Small step penalty to encourage efficiency
         breakdown["step_cost"] = -0.01
@@ -775,8 +808,9 @@ class CustomerSupportEnv:
 
         role = self.task_config.get("role", "solo")
         triage_decision = None
-        if role == "resolver" and ticket is not None:
-            triage_decision = self.last_triage_decision or f"category={ticket.category.value}"
+        if role == "resolver":
+            # Never backfill with ground-truth category; resolver should only see real triage output.
+            triage_decision = self.last_triage_decision
 
         return Observation(
             current_ticket=ticket,

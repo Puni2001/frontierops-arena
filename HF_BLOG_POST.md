@@ -1,15 +1,15 @@
-# AI Support Envoy: Mastering Customer Operations with GRPO
+# FrontierOps Arena: Mastering Enterprise Operations with GRPO
 **🎥 Watch the Demo:** [YouTube Video Link](https://youtu.be/BQKfDsODfFk)
 
 ### Judge TL;DR
-**AI Support Envoy is an evidence-gated RL support-ops benchmark**: agents must optimize outcomes under SLA pressure while respecting governance and degraded-tool constraints.
+**FrontierOps Arena is an evidence-gated RL operations benchmark**: agents must optimize outcomes under SLA pressure while respecting governance and degraded-tool constraints.
 
 - **Primary theme fit:** #3.1 World Modeling (Professional Tasks)
 - **Secondary theme fit:** #1 Multi-Agent Interactions
 - **Fast evidence path:** `results/judge_scorecard.md` + `JUDGE_QA.md`
 
 ### 🚀 The Mission
-Customer support is often the bottleneck of scaling businesses. Static RAG-based bots fail to take actions, while rule-based systems are too rigid. The **AI Support Envoy** is a next-generation agent trained in a high-fidelity **OpenEnv** environment using **Group Relative Policy Optimization (GRPO)** to master the three pillars of support: Triage, Prioritization, and Resolution.
+Customer operations are often the bottleneck of scaling businesses. Static RAG-based bots fail to take actions, while rule-based systems are too rigid. **FrontierOps Arena** is a high-fidelity **OpenEnv** environment used with **Group Relative Policy Optimization (GRPO)** to train triage, prioritization, and resolution behavior.
 
 ### 🧠 Technical Innovation: Curriculum Learning
 We didn't just train a model; we designed a curriculum.
@@ -39,7 +39,7 @@ For constrained reruns, we also provide a deterministic multi-seed offline bench
 Anti-hacking ablation (`ablation_hack_penalty.json`) shows removing the urgent-spam penalty increases spam policy reward by **+0.92**, validating the defense against reward hacking.
 
 ### Frontier Upgrade: Near-Complete Automation Path
-To move beyond standard support bots, we added a frontier mode that combines:
+To move beyond static assistance pipelines, we added a frontier mode that combines:
 - multilingual voice/text normalization with code-mix handling
 - multi-industry world modeling (ecommerce, telecom, healthcare/insurance, travel)
 - six high-risk classes (PII, fraud, account takeover, prompt injection, legal threat, medical safety)
@@ -56,6 +56,13 @@ Latest ablation bundle now includes governance behavior:
 - governance-compliant policy: `safe_wrongful_autonomy_count = 0`
 
 Even when reward deltas are close on tiny offline runs, wrongful-autonomy elimination is the core proof that safeguards are active.
+
+### Frontier Metric Interpretation (How to Read It)
+Frontier is intentionally safety-constrained and adversarial. It combines high-risk policy gates, noisy multilingual inputs, and degraded-tool conditions.  
+So we do not treat frontier like a simple “maximize score” track. We treat it as a **safe-autonomy stress test**:
+- reward improvement vs baseline is required
+- blocked unsafe autonomy and correct handoffs are first-class outcomes
+- lower raw frontier success can still represent better policy quality under stronger constraints
 
 ### Production SLO / KPI Scorecard
 Server now exposes:

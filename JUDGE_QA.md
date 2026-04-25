@@ -1,6 +1,6 @@
 # Judge Q&A Cheat Sheet
 
-## 1) How is this different from a normal RAG support bot?
+## 1) How is this different from a normal RAG assistant pipeline?
 
 RAG answers questions; this project trains a policy in a **stateful environment** with SLA deadlines, queue pressure, customer history, and governance constraints. The agent is scored on actions and outcomes, not just text quality.
 

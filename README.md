@@ -71,6 +71,15 @@ Source: [`results/baseline_vs_trained_colab.json`](results/baseline_vs_trained_c
 
 Source: [`results/final_baseline_vs_trained.md`](results/final_baseline_vs_trained.md)
 
+### Frontier interpretation (important)
+
+Frontier is intentionally the hardest regime: high-risk governance gates, multilingual/noisy inputs, tool failures, and delayed consequences.  
+In this mode, we prioritize **safety-constrained improvement** over absolute score inflation.
+
+- Reward still improves versus baseline (`+78.8%` in deterministic reruns).
+- Frontier success can remain low while behavior quality improves, because blocked unsafe autonomy and safe handoffs are explicitly rewarded.
+- We treat frontier as a stress-test track for safe autonomy, not a “quick-win” metric track.
+
 ### Anti-reward-hacking evidence
 
 Removing the anti-spam penalty increases spam-policy reward by `+0.92`, confirming the safeguard closes a real loophole.
@@ -133,9 +142,18 @@ Source: [`results/ablation_hack_penalty.json`](results/ablation_hack_penalty.jso
 
 ## Hackathon Theme Alignment
 
+| Theme | What is implemented | Where to verify |
+| :--- | :--- | :--- |
+| #1 Multi-Agent Interactions | Role-specialized triage/resolver with incentive-modeled coordination and anti-dumping penalties | `src/customer_support_env.py` (`coordination_routing_bonus`, `coalition_safety_bonus`, `missed_handoff_penalty`, `escalation_dumping_penalty`, `handoff_contradiction_penalty`) |
+| #3.1 World Modeling | Partially observable enterprise state + tool calls + degraded providers + governance gates | `src/customer_support_env.py`, `src/toolhub.py`, `src/mock_api_stack.py`, `src/policy_rules.py` |
+| #4 Self-Improvement (roadmap) | Curriculum progression and planned self-generated hard-case expansion | `train.py`, roadmap section below |
+
 ### Theme #1: Multi-Agent Interactions
 - Specialized roles in `multi_agent_triage` and `multi_agent_resolver`
-- Coordination behavior under queue and SLA pressure
+- Incentive-modeled coordination via explicit reward terms:
+  - `coordination_routing_bonus`, `coalition_safety_bonus`
+  - `missed_handoff_penalty`, `escalation_dumping_penalty`, `handoff_contradiction_penalty`
+- Coordination behavior under queue pressure, SLA pressure, and risk-handoff trade-offs
 
 ### Theme #3.1: World Modeling (Professional Tasks)
 - Partially observable enterprise operations world
@@ -206,4 +224,4 @@ python ablation_eval.py
 
 ---
 
-*FrontierOps Arena (AI Support Envoy codebase) · OpenEnv Hackathon Submission · Punith S*
+*FrontierOps Arena · OpenEnv Hackathon Submission · Punith S*

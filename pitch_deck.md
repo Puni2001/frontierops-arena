@@ -1,10 +1,10 @@
-# AI Support Envoy — Hackathon Pitch Deck
+# FrontierOps Arena — Hackathon Pitch Deck
 
 This document contains everything you need to deliver a winning pitch at the Meta PyTorch OpenEnv Hackathon.
 
 ## Core Thesis (Use This Everywhere)
 
-**AI Support Envoy is an evidence-gated RL support-ops benchmark that trains agents to balance resolution quality, safety, and reliability under degraded tools.**
+**FrontierOps Arena is an evidence-gated RL operations benchmark that trains agents to balance resolution quality, safety, and reliability under degraded tools.**
 
 - Primary fit: **Theme #3.1 World Modeling**
 - Secondary fit: **Theme #1 Multi-Agent**
@@ -16,17 +16,17 @@ This document contains everything you need to deliver a winning pitch at the Met
 
 **0:00 - 0:30 (The Hook & Problem)**
 > "Enterprise customer support is fundamentally broken. Simple QA bots are cheap but hallucinate and infuriate customers, while human agents are empathetic but expensive and slow during ticket storms. What if we could train an LLM to navigate the complexity of enterprise SLAs and human emotion? 
-> Welcome to *AI Support Envoy*. We built a production-grade RL environment using the OpenEnv framework to train autonomous agents on real-world enterprise workflows."
+> Welcome to *FrontierOps Arena*. We built a production-grade RL environment using the OpenEnv framework to train autonomous agents on real-world enterprise workflows."
 
 **0:30 - 1:15 (The Environment Architecture)**
 > *(Share screen showing Dashboard Task Levels)*
 > "For Theme 3.1, World Modeling, we didn't just build a Q&A simulator. We built an entire enterprise gym with built-in **Curriculum Learning**. Our environment generates randomized tickets across **7 progressive task modes** (including a frontier governed-ops mode), allowing the model to bootstrap on easy tasks before graduating to high-risk, tool-driven workflows.
 > Crucially, we implemented **Reinforcement Learning with Verifiable Rewards (RLVR)**. The agent receives a dense, programmatic reward tensor at every step—scoring empathy, SLA compliance, and VIP awareness—rather than relying on subjective or easily-gamed LLM-as-a-judge scoring."
 
-**1:15 - 2:00 (Anti-Reward Hacking & Multi-Agent Flex)**
+**1:15 - 2:00 (Anti-Reward Hacking & Multi-Agent Incentives)**
 > *(Show the Anti-Reward Hacking UI section)*
 > "RL models are notorious for specification gaming, so we engineered strict **Anti-Reward Hacking** protections. If the agent spams 'urgent' to hack the SLA multiplier, or spams 'sorry' without solving the issue, it gets heavily penalized. 
-> For Theme 1, Multi-Agent dynamics, we simulate an entire department. Look at this live demo comparing our Instruct Baseline against our GRPO-Trained model. Agent 1 is a Triage specialist; Agent 2 is the Resolver. Watch the reward breakdown chips on screen—every micro-action is verifiably scored."
+> For Theme 1, we go beyond role decomposition and model incentives directly. The triage agent gets rewarded for correct routing and safe coalition handoff, and penalized for escalation dumping. The resolver gets rewarded for handoff alignment and penalized for contradiction. This creates measurable coordination behavior under partially observable pressure."
 
 **2:00 - 2:30 (The GRPO Training Proof with Unsloth)**
 > *(Show the Run History tab with the reward curve)*
@@ -46,16 +46,16 @@ Traditional Tier-1 and Tier-2 customer support scales terribly.
 - **Current AI Limitation:** Standard RAG (Retrieval-Augmented Generation) chatbots don't "feel" urgency. They will politely answer a VIP's furious email 2 hours too late, breaching the SLA.
 
 ### The Profitability Model (Our Solution)
-By training a lightweight 8B/14B parameter model in the **AI Support Envoy** OpenEnv gym, enterprises can deploy an RL-tuned model that inherently understands *urgency* and *workflow*.
+By training a lightweight 8B/14B parameter model in the **FrontierOps Arena** OpenEnv gym, enterprises can deploy an RL-tuned model that inherently understands *urgency* and *workflow*.
 
-| Metric | Human Agent | Standard RAG Bot | **Envoy RL-Agent** |
+| Metric | Human Agent | Standard RAG Bot | **FrontierOps RL-Agent** |
 | :--- | :--- | :--- | :--- |
 | **Cost per Ticket** | $30.00 | $0.05 | **$0.02 (Locally Hosted)** |
 | **SLA Adherence** | 85% | 70% | **99% (Reward-Optimized)** |
 | **Empathy Scaling**| Inconsistent | Robotic | **Adaptive (via Sentiment Bonus)**|
 | **Multi-Agent** | Slow Handoffs | N/A | **Instant Context Transfer** |
 
-**ROI Calculation:** For an enterprise processing 10,000 tickets a month, migrating 60% of Tier-1/Tier-2 tickets to the Envoy-trained model saves **$216,000 annually**, while improving overall SLA response metrics.
+**ROI Calculation:** For an enterprise processing 10,000 tickets a month, migrating 60% of Tier-1/Tier-2 tickets to the FrontierOps-trained model saves **$216,000 annually**, while improving overall SLA response metrics.
 
 ---
 
@@ -68,7 +68,7 @@ graph TD
         B --> C{"Policy Network"}
     end
 
-    subgraph "AI Support Envoy (Our OpenEnv Server)"
+    subgraph "FrontierOps Arena (Our OpenEnv Server)"
         C -- "Action (type, value)" --> D[("CustomerSupportEnv")]
         D -- "Ticket Generation" --> E["State Engine"]
         D -- "SLA Logic" --> E
@@ -147,6 +147,10 @@ Use these in the final 2-minute demo when judges ask for low-cost rerunnable evi
 - Hard: `-0.717 ± 0.260` -> `-0.133 ± 0.327` (**+81.4%**)
 - Frontier: `-0.616 ± 0.070` -> `-0.131 ± 0.058` (**+78.8%**)
 
+Frontier interpretation note (say this explicitly):
+- Frontier is a safety-constrained stress-test regime, not a pure score-max regime.
+- We optimize for safe autonomy under risk and tool degradation; lower raw frontier success can coexist with better policy quality.
+
 Anti-hacking ablation (urgent-spam penalty removed) gives spam policy `+0.92` higher reward, proving the penalty is necessary to prevent reward gaming.
 
 Frontier governance ablation (new):
@@ -162,7 +166,7 @@ Note for Q&A:
 
 ## 7. Frontier Ops Add-On (Judge Differentiator)
 
-Use this section when judges ask "How is this different from a normal support bot?":
+Use this section when judges ask "How is this different from a normal assistant pipeline?":
 
 - **Multilingual Voice + Text Ingestion**: mock ASR/TTS and code-mixed language normalization.
 - **Four Industry Packs**: ecommerce, telecom, healthcare/insurance, travel.

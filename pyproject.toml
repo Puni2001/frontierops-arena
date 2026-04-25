@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "openenv-customer-support"
 version = "2.0.0"
-description = "AI Support Envoy — Enterprise customer support RL environment for OpenEnv"
+description = "FrontierOps Arena — Enterprise operations RL benchmark environment for OpenEnv"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}

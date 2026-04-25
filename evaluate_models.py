@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-AI Support Envoy — Model Evaluation & Reproducibility Report
-===========================================================
+FrontierOps Arena — Model Evaluation & Reproducibility Report
+=============================================================
 This script performs a rigorous side-by-side comparison between the 
 Base Instruct LLM and the Trained RL Agent (GRPO).
 
