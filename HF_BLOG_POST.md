@@ -1,6 +1,13 @@
 # AI Support Envoy: Mastering Customer Operations with GRPO
 **🎥 Watch the Demo:** [YouTube Video Link](https://youtu.be/BQKfDsODfFk)
 
+### Judge TL;DR
+**AI Support Envoy is an evidence-gated RL support-ops benchmark**: agents must optimize outcomes under SLA pressure while respecting governance and degraded-tool constraints.
+
+- **Primary theme fit:** #3.1 World Modeling (Professional Tasks)
+- **Secondary theme fit:** #1 Multi-Agent Interactions
+- **Fast evidence path:** `results/judge_scorecard.md` + `JUDGE_QA.md`
+
 ### 🚀 The Mission
 Customer support is often the bottleneck of scaling businesses. Static RAG-based bots fail to take actions, while rule-based systems are too rigid. The **AI Support Envoy** is a next-generation agent trained in a high-fidelity **OpenEnv** environment using **Group Relative Policy Optimization (GRPO)** to master the three pillars of support: Triage, Prioritization, and Resolution.
 

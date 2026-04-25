@@ -2,6 +2,14 @@
 
 This document contains everything you need to deliver a winning pitch at the Meta PyTorch OpenEnv Hackathon.
 
+## Core Thesis (Use This Everywhere)
+
+**AI Support Envoy is an evidence-gated RL support-ops benchmark that trains agents to balance resolution quality, safety, and reliability under degraded tools.**
+
+- Primary fit: **Theme #3.1 World Modeling**
+- Secondary fit: **Theme #1 Multi-Agent**
+- Judge fast artifacts: `results/judge_scorecard.md`, `JUDGE_QA.md`
+
 ---
 
 ## 1. The 3-Minute Pitch Script
@@ -12,7 +20,7 @@ This document contains everything you need to deliver a winning pitch at the Met
 
 **0:30 - 1:15 (The Environment Architecture)**
 > *(Share screen showing Dashboard Task Levels)*
-> "For Theme 3.1, World Modeling, we didn't just build a Q&A simulator. We built an entire enterprise gym with built-in **Curriculum Learning**. Our environment generates randomized tickets across 6 progressive difficulty tiers, allowing the model to bootstrap on easy tasks before graduating to 'Chaos Mode'—which simulates Monday morning ticket storms.
+> "For Theme 3.1, World Modeling, we didn't just build a Q&A simulator. We built an entire enterprise gym with built-in **Curriculum Learning**. Our environment generates randomized tickets across **7 progressive task modes** (including a frontier governed-ops mode), allowing the model to bootstrap on easy tasks before graduating to high-risk, tool-driven workflows.
 > Crucially, we implemented **Reinforcement Learning with Verifiable Rewards (RLVR)**. The agent receives a dense, programmatic reward tensor at every step—scoring empathy, SLA compliance, and VIP awareness—rather than relying on subjective or easily-gamed LLM-as-a-judge scoring."
 
 **1:15 - 2:00 (Anti-Reward Hacking & Multi-Agent Flex)**

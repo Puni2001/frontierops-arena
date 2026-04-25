@@ -20,12 +20,32 @@ pinned: false
 
 ---
 
-## Final Performance Report (Verified Proof)
+## Why This Stands Out
+
+AI Support Envoy is not a chatbot demo; it is an **evidence-gated RL support-ops benchmark**:
+
+- learns task handling via GRPO with dense, programmatic rewards
+- operates in a partially observable world with SLA pressure and queue dynamics
+- uses mock tools/APIs with degraded-provider simulation (timeouts, rate-limits, fallbacks)
+- enforces governance in high-risk cases via tool evidence and safe handoff actions
+- reports safety + reliability + business KPIs for manual judge review
+
+Primary theme fit: **#3.1 World Modeling (Professional Tasks)**  
+Secondary theme fit: **#1 Multi-Agent Interactions**
+
+## 30-Second Judge Path
 
 **Judge fast path:**
 - One-page evidence summary: `results/judge_scorecard.md`
 - Judge Q&A pack: `JUDGE_QA.md`
 - Full interactive checklist (same facts as below): open the app UI → **Judge Checklist** section on the dashboard (`/` → scroll to *Judge — Complete Feature Checklist*), or **Run History** (`/history`) → *Judge — Repo Artifacts & Scripts*.
+
+Run path (deterministic repro):
+1) `python evaluate_models.py --offline --tasks easy,medium,hard,frontier --episodes 3 --seeds 41,42,43 --output results/final_baseline_vs_trained.md --trained-model offline_stub`  
+2) `python ablation_eval.py`  
+3) `python -m server.app` then `GET /export/scorecard`
+
+## Final Performance Report (Verified Proof)
 
 ## Judge: Full Feature Index (manual review)
 
