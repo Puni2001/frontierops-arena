@@ -10,16 +10,17 @@ pinned: false
 # 🎧 AI Support Envoy
 
 > **📖 Technical Blog & Report:** [Read our full Grand Finale Submission Report on Hugging Face](https://huggingface.co/spaces/punith2001/openenv-customer-support/discussions/1)
->
-> **🎥 Demo Video:** [Watch the AI Support Envoy in Action](https://youtu.be/BQKfDsODfFk)
 
-An OpenEnv-compliant RL environment for training AI agents on enterprise customer support workflows.
+[![Watch the Demo](https://img.youtube.com/vi/BQKfDsODfFk/0.jpg)](https://youtu.be/BQKfDsODfFk)
+*Click above to watch the AI Support Envoy in action.*
+
+**An OpenEnv-compliant RL environment for training AI agents on enterprise customer support workflows.**
 
 **Hackathon Themes:** World Modeling — Professional Tasks (#3.1) + Multi-Agent Interactions (#1)
 
 ---
 
-## 🏆 Final Performance Report
+## 🏆 Final Performance Report (Verified Proof)
 
 After a full curriculum training run (Easy → Medium → Hard) using **GRPO**, the AI Support Envoy achieved massive gains over the base model.
 
@@ -29,11 +30,28 @@ After a full curriculum training run (Easy → Medium → Hard) using **GRPO**, 
 | **Medium** | 0.02 | 0.53 | **+1,872%** |
 | **Hard** | -0.21 | 0.39 | **+284%** |
 
-### 📈 Reward Curves
+### 📈 Training Mastery (Reward Curves)
 ![Reward Curves](results/reward_curves.png)
-*Figure 1: Training progress across the 3 curriculum phases. Note the agent successfully climbing from negative/random rewards to consistent mastery.*
+*Figure 1: Training progress across the 3 curriculum phases. Note the agent successfully climbing from negative rewards to consistent mastery.*
+
+### 📄 Raw Evidence (results/baseline_vs_trained_colab.json)
+```json
+{
+  "before": { "easy": 0.420, "medium": 0.027, "hard": -0.215 },
+  "after":  { "easy": 0.655, "medium": 0.532, "hard": 0.396 }
+}
+```
 
 ---
+
+## 🚀 Future Roadmap (With Additional Credits)
+With more compute, we are ready to scale this project further:
+1. **Model Scaling**: Upgrade from Qwen-0.5B to **Llama-3.1-8B** or **Qwen-2.5-7B** for deeper reasoning.
+2. **Dataset Expansion**: Increase training samples from 200 to **2,000 per task** for smoother convergence.
+3. **Recursive Self-Improvement**: Implement Theme #4 by allowing the agent to generate its own "Edge Case" tickets to train on.
+
+---
+
 
 ---
 
