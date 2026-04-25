@@ -26,7 +26,7 @@ Use this right before final push/submission.
 
 ## Final Run Refresh (if rerunning with HF credits)
 - [ ] `python train.py --model Qwen/Qwen2.5-0.5B-Instruct --curriculum easy,medium,hard --epochs 2 --samples 200 --batch-size 2 --seed 42`
-- [ ] `python evaluate_models.py --base-model Qwen/Qwen2.5-0.5B-Instruct --trained-model punith2001/openenv-customer-support-model --tasks easy,medium,hard --episodes 3 --seeds 41,42,43 --output results/final_baseline_vs_trained.md`
+- [ ] `python evaluate_models.py --base-model Qwen/Qwen2.5-0.5B-Instruct --trained-model punith2001/frontierops-arena-model --tasks easy,medium,hard --episodes 3 --seeds 41,42,43 --output results/final_baseline_vs_trained.md`
 - [ ] `python evaluate_models.py --offline --tasks easy,medium,hard,frontier --episodes 3 --seeds 41,42,43 --output results/final_baseline_vs_trained.md --trained-model offline_stub`
 - [ ] `python ablation_eval.py`
 - [ ] `curl -s http://localhost:7860/export/scorecard > /tmp/scorecard_export.json`

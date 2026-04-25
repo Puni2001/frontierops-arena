@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "openenv-customer-support"
+name = "frontierops-arena"
 version = "2.0.0"
 description = "FrontierOps Arena — Enterprise operations RL benchmark environment for OpenEnv"
 readme = "README.md"
@@ -40,4 +40,4 @@ src = ["*.py"]
 server = ["*.py"]
 
 [project.urls]
-"Homepage" = "https://github.com/punithpunith2001/openenv-customer-support"
+"Homepage" = "https://github.com/Puni2001/frontierops-arena"

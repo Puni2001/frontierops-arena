@@ -259,6 +259,6 @@ if __name__ == "__main__":
     parser.add_argument("--seed", type=int, default=42,
                         help="Global seed for deterministic runs")
     parser.add_argument("--push-to-hub", action="store_true")
-    parser.add_argument("--hub-repo", default="punith2001/openenv-customer-support-model")
+    parser.add_argument("--hub-repo", default="punith2001/frontierops-arena-model")
     args = parser.parse_args()
     train(args)

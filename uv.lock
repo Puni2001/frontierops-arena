@@ -1463,7 +1463,7 @@ wheels = [
 ]
 
 [[package]]
-name = "openenv-customer-support"
+name = "frontierops-arena"
 version = "1.0.0"
 source = { editable = "." }
 dependencies = [
