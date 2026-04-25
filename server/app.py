@@ -28,6 +28,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from src.customer_support_env import CustomerSupportEnv, Action, KNOWLEDGE_BASE, TicketCategory
+from src.agent import SupportAgent
 
 app = FastAPI(
     title="AI Support Envoy — OpenEnv",
@@ -261,8 +262,6 @@ async def demo_episode(task_level: str = "hard", use_llm: bool = False, agent_ty
     agent_live = None
     model_name = None
     if use_llm:
-        import os
-        from inference import SupportAgent
         api_base = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
         base_model = os.getenv("BASE_MODEL_NAME", os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct"))
         trained_model = os.getenv("TRAINED_MODEL_NAME", base_model)

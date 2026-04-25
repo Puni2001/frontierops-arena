@@ -18,7 +18,7 @@ import random
 import numpy as np
 from typing import List, Dict
 from dotenv import load_dotenv
-from inference import SupportAgent
+from src.agent import SupportAgent
 from src.customer_support_env import CustomerSupportEnv, Action
 
 load_dotenv(override=True)
