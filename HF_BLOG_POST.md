@@ -1,90 +1,103 @@
-# FrontierOps Arena: Mastering Enterprise Operations with GRPO
-**🎥 Watch the Demo:** [YouTube Video Link](https://youtu.be/BQKfDsODfFk)
-**📝 Live Report Discussion:** [Hugging Face Space Discussion #2](https://huggingface.co/spaces/punith2001/frontierops-arena/discussions/2)
+# FrontierOps Arena: Mini-Blog for Judges
 
-### Judge TL;DR
-**FrontierOps Arena is an evidence-gated RL operations benchmark**: agents must optimize outcomes under SLA pressure while respecting governance and degraded-tool constraints.
+**Demo video (<2 min):** [YouTube demo](https://youtu.be/BQKfDsODfFk)  
+**Live environment:** [Hugging Face Space](https://huggingface.co/spaces/punith2001/frontierops-arena)  
+**Submission report:** [HF Discussion #2](https://huggingface.co/spaces/punith2001/frontierops-arena/discussions/2)  
+**README (all links):** [GitHub README](https://github.com/Puni2001/frontierops-arena)
 
-- **Primary theme fit:** #3.1 World Modeling (Professional Tasks)
-- **Secondary theme fit:** #1 Multi-Agent Interactions
-- **Fast evidence path:** `results/judge_scorecard.md` + `JUDGE_QA.md`
+## What this environment does
 
-### 🚀 The Mission
-Customer operations are often the bottleneck of scaling businesses. Static RAG-based bots fail to take actions, while rule-based systems are too rigid. **FrontierOps Arena** is a high-fidelity **OpenEnv** environment used with **Group Relative Policy Optimization (GRPO)** to train triage, prioritization, and resolution behavior.
+FrontierOps Arena is an OpenEnv benchmark for training enterprise support agents under:
+- partial observability
+- SLA pressure and queue dynamics
+- degraded tools/APIs (timeouts, rate limits, fallback)
+- governance constraints in high-risk cases
 
-### 🧠 Technical Innovation: Curriculum Learning
-We didn't just train a model; we designed a curriculum.
-1. **Phase 1 (Easy):** Mastering **Triage**. The agent learns the nuance between technical bugs and billing disputes.
-2. **Phase 2 (Medium):** Mastering **Prioritization**. Training the model to identify VIP customers and urgent SLAs without being "label-baited."
-3. **Phase 3 (Hard):** Mastering **Resolution**. Teaching the agent to navigate a Knowledge Base to solve complex, multi-step issues.
+The core objective is to train policy behavior that is both **effective and safe**, not just fluent.
 
-### 🔬 The Secret Sauce: GRPO & Unsloth
-By leveraging **Unsloth** for 2x faster fine-tuning and **GRPO** for reasoning-aware policy updates, we achieved:
-- **Massive Reward Trajectory:** Moving from a failing baseline of `-0.21` on complex tasks to a trained peak of **+0.65**.
-- **Reasoning Chains:** The agent doesn't just output an action; it outputs a `reasoning` field that explains its "World Model" of the ticket.
-- **Anti-Reward Hacking:** Our reward function was specifically patched to penalize "priority spamming," ensuring the agent learns genuine business value.
+## What we trained
 
-### Results
-Our full-run evidence (`baseline_vs_trained_colab.json` + reward curves) shows a transformative shift in agent capability:
-*   **Easy (Triage):** +56% improvement.
-*   **Medium (Prioritization):** **+1,872% improvement** (Learning to ignore label-bait).
-*   **Hard (Resolution):** **+284% improvement** (Mastering multi-step KB navigation).
+We trained a policy with a curriculum using GRPO/TRL:
+1. `easy` — triage classification
+2. `medium` — priority reasoning under SLA/VIP constraints
+3. `hard` — resolution quality + escalation logic
+4. evaluated on `frontier` stress mode for safe autonomy behavior
 
-### Solo Budget Repro Pack (Apr 25)
-For constrained reruns, we also provide a deterministic multi-seed offline benchmark:
-- Easy: **+212.0%** (`0.314 ± 0.089` → `0.981 ± 0.055`)
-- Medium: **+163.3%** (`-0.954 ± 0.293` → `0.604 ± 0.246`)
-- Hard: **+81.4%** (`-0.717 ± 0.260` → `-0.133 ± 0.327`)
-- Frontier: **+78.8%** (`-0.616 ± 0.070` → `-0.131 ± 0.058`)
+Training assets are in `train.py` and `train_colab.ipynb`.
 
-Anti-hacking ablation (`ablation_hack_penalty.json`) shows removing the urgent-spam penalty increases spam policy reward by **+0.92**, validating the defense against reward hacking.
+## Theme alignment
 
-### Frontier Upgrade: Near-Complete Automation Path
-To move beyond static assistance pipelines, we added a frontier mode that combines:
-- multilingual voice/text normalization with code-mix handling
-- multi-industry world modeling (ecommerce, telecom, healthcare/insurance, travel)
-- six high-risk classes (PII, fraud, account takeover, prompt injection, legal threat, medical safety)
-- evidence-gated autonomy via tool calls (`policy_lookup`, `fraud_screen`, `kyc_verify`, `trust_safety_review`)
-- provider-style mock APIs with transient failures (rate-limit/timeout), latency, and deterministic fallbacks
+- **Primary:** Theme #3.1 World Modeling (professional tasks)
+- **Secondary:** Theme #1 Multi-Agent Interactions
 
-This converts the environment from "just resolve tickets" into "resolve only when policy and evidence permit", with explicit fallback actions:
-- `human_review_required`
-- `legal_hold`
+Theme #1 is implemented via `multi_agent_triage` + `multi_agent_resolver` with incentive-shaped coordination terms (routing/handoff bonuses and anti-dumping penalties), not only role splitting.
 
-### Governance and Safety Evidence
-Latest ablation bundle now includes governance behavior:
-- unsafe always-resolve policy: `unsafe_wrongful_autonomy_count = 6`
-- governance-compliant policy: `safe_wrongful_autonomy_count = 0`
+## Evidence of improvement
 
-Even when reward deltas are close on tiny offline runs, wrongful-autonomy elimination is the core proof that safeguards are active.
+Primary run (`results/baseline_vs_trained_colab.json`):
+- Easy: `+56%`
+- Medium: `+1,872%`
+- Hard: `+284%`
 
-### Frontier Metric Interpretation (How to Read It)
-Frontier is intentionally safety-constrained and adversarial. It combines high-risk policy gates, noisy multilingual inputs, and degraded-tool conditions.  
-So we do not treat frontier like a simple “maximize score” track. We treat it as a **safe-autonomy stress test**:
-- reward improvement vs baseline is required
-- blocked unsafe autonomy and correct handoffs are first-class outcomes
-- lower raw frontier success can still represent better policy quality under stronger constraints
+Deterministic repro pack (`results/final_baseline_vs_trained.md`):
+- Easy: `+212.0%`
+- Medium: `+163.3%`
+- Hard: `+81.4%`
+- Frontier: `+78.8%`
 
-### Production SLO / KPI Scorecard
-Server now exposes:
-- `GET /scorecard` for live SLO + safety + business KPI rollups
-- `GET /export/scorecard` to persist `results/scorecard_report.json`
+Reward-hacking ablation (`results/ablation_hack_penalty.json`):
+- Removing urgent-spam defense increases exploit reward by `+0.92` (proof safeguard matters)
 
-Scorecard dimensions:
-- safety: safe handoff rate, blocked unsafe action rate, wrongful autonomy rate
-- safety/reliability: tool fallback rate from simulated provider degradation
-- business: containment rate, automation confidence index, tool-calls-per-ticket
+## Proof Bundle (direct artifacts)
 
-### Judge Review Fast Path
-To reduce manual review friction, we provide:
-- `results/judge_scorecard.md`: one-page performance/safety/reliability evidence summary
-- `JUDGE_QA.md`: concise answers for architecture, safety, and reproducibility questions
+### Core metrics and reproducibility artifacts
+- Primary training deltas: [`results/baseline_vs_trained_colab.json`](results/baseline_vs_trained_colab.json)
+- Deterministic multi-seed report: [`results/final_baseline_vs_trained.md`](results/final_baseline_vs_trained.md)
+- Deterministic raw data: [`results/final_baseline_vs_trained.json`](results/final_baseline_vs_trained.json)
+- Summary statistics: [`results/final_summary_stats.json`](results/final_summary_stats.json)
+- Judge one-page scorecard: [`results/judge_scorecard.md`](results/judge_scorecard.md)
+- Judge Q&A: [`JUDGE_QA.md`](JUDGE_QA.md)
 
-### Reproducibility
-The training process is documented in `train_colab.ipynb` and backed by:
-- full-run evidence artifacts
-- deterministic fallback reproducibility pack (`results/final_*`)
-- explicit anti-hacking ablation evidence
+### Safety, governance, and anti-reward-hacking proof
+- Anti-hacking ablation: [`results/ablation_hack_penalty.json`](results/ablation_hack_penalty.json)
+- Scorecard export output: [`results/scorecard_report.json`](results/scorecard_report.json)
+- Frontier scorecard smoke sample: [`results/frontier_scorecard_smoke.json`](results/frontier_scorecard_smoke.json)
+
+### Visual proof (plots)
+- Reward curves: [`results/reward_curves.png`](results/reward_curves.png)
+- Final reward comparison plot: [`results/final_reward_comparison.png`](results/final_reward_comparison.png)
+
+### Environment and training code proof
+- OpenEnv manifest: [`openenv.yaml`](openenv.yaml)
+- Environment core: [`src/customer_support_env.py`](src/customer_support_env.py)
+- Training script: [`train.py`](train.py)
+- Colab training notebook: [`train_colab.ipynb`](train_colab.ipynb)
+- Evaluation script: [`evaluate_models.py`](evaluate_models.py)
+- Ablation script: [`ablation_eval.py`](ablation_eval.py)
+
+## Frontier interpretation (important)
+
+Frontier mode is a **safety-constrained stress test**:
+- high-risk governance gates
+- noisy multilingual/code-mix inputs
+- degraded tool reliability
+
+So we treat frontier as safe-autonomy evaluation, not a simple score-max track.  
+Low raw success can still represent improvement when unsafe autonomy is reduced and safe handoffs increase.
+
+## Reproducibility path
+
+```bash
+python evaluate_models.py --offline --tasks easy,medium,hard,frontier --episodes 3 --seeds 41,42,43 --output results/final_baseline_vs_trained.md --trained-model offline_stub
+python ablation_eval.py
+python -m server.app   # then GET /export/scorecard
+```
+
+## Judge fast path
+
+- `results/judge_scorecard.md` — one-page capability/safety/reliability summary
+- `JUDGE_QA.md` — concise technical Q&A
+- Space routes: `/` and `/history` for interactive demo + evidence trail
 
 ---
-*Built for the Meta PyTorch OpenEnv Hackathon 2026 Grand Finale.*
+Built for the Meta PyTorch OpenEnv Hackathon 2026 Grand Finale.
