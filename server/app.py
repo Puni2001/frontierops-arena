@@ -177,7 +177,8 @@ async def clear_runs():
     return {"status": "ok", "removed_runs": removed}
 
 @app.post("/reset")
-async def reset(request: ResetRequest, x_session_id: Optional[str] = Header(default=None)):
+async def reset(request: Optional[ResetRequest] = None, x_session_id: Optional[str] = Header(default=None)):
+    request = request or ResetRequest()
     if request.task_level not in VALID_TASK_LEVELS:
         raise HTTPException(400, f"task_level must be one of {sorted(VALID_TASK_LEVELS)}")
 

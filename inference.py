@@ -12,6 +12,7 @@ import os
 import json
 import time
 import sys
+import math
 from typing import List, Optional, Dict
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -97,6 +98,12 @@ def run_task(task_level: str, agent: SupportAgent, seed: Optional[int] = None) -
     }
     if task_level in graders:
         score = graders[task_level]()
+
+    # Some external validators reject endpoint scores at exact boundaries.
+    # Keep score strictly within (0, 1) while preserving ordering.
+    if math.isfinite(score):
+        eps = 1e-6
+        score = min(max(float(score), eps), 1.0 - eps)
 
     success = score >= 0.6
     log_end(success, step, score, rewards)
